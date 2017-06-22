@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncvas.common.dao.AccountRegisterMapper">
+
+	<resultMap type="com.ncvas.payment.entity.AccountRegister" id="accountRegisterResultMap">
+		<id property="id" column="ID" />
+		<result property="loginName" column="loginName" />
+		<result property="loginPwd" column="loginPwd" />
+		<result property="regType" column="regType" />
+		<result property="nickname" column="nickname" />
+		<result property="referee" column="referee" />
+		<result property="created" column="CREATED"/>
+	</resultMap>
+
+	<resultMap type="com.ncvas.payment.entity.AccountRegisterDTO" extends="accountRegisterResultMap" id="accountRegisterResultMap2">
+		<result property="numberOfPeople" column="NUMBER_OF_PEOPLE"/>
+	</resultMap>
+
+    <insert id="add" parameterType="com.ncvas.payment.entity.AccountRegister">
+    	<selectKey keyProperty="id" resultType="String" order="BEFORE">
+			SELECT SEQ_NJCC_ACCOUNT_REGISTER.NEXTVAL FROM DUAL
+		</selectKey>
+	      	INSERT INTO NJCC_ACCOUNT_REGISTER
+	      		(ID,loginName,loginPwd,regType,nickname,referee,CREATED) VALUES
+	      		(
+	     		#{id, jdbcType=VARCHAR},
+				#{loginName, jdbcType=VARCHAR},
+				#{loginPwd, jdbcType=VARCHAR},
+				#{regType, jdbcType=VARCHAR},
+				#{nickname, jdbcType=VARCHAR},
+				#{referee, jdbcType=VARCHAR},
+				SYSDATE
+	      		)
+	</insert>
+	
+	<update id="update" parameterType="com.ncvas.payment.entity.AccountRegister">
+		UPDATE NJCC_ACCOUNT_REGISTER
+		<set>
+			<if test="loginName !=null and loginName !=''">
+				loginName		=		#{loginName, jdbcType=VARCHAR},
+			</if>
+			<if test="loginPwd !=null and loginPwd !=''">
+				loginPwd		=		#{loginPwd, jdbcType=VARCHAR},
+			</if>
+			<if test="regType !=null and regType !=''">
+				regType		=			#{regType, jdbcType=VARCHAR},
+			</if>
+			<if test="nickname !=null and nickname !=''">
+				nickname		=		#{nickname, jdbcType=VARCHAR},
+			</if>
+			<if test="referee !=null and referee !=''">
+				referee		=		#{referee, jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+	
+	<select id="get" resultMap="accountRegisterResultMap">
+			SELECT * FROM 
+          			NJCC_ACCOUNT_REGISTER
+      					WHERE
+      					ID = #{id}
+	</select>
+
+	<sql id="queryParams">
+		<if test="dto.regType != null and dto.regType != ''"> AND regType  = #{dto.regType}</if>
+	</sql>
+	
+	<select id="query" resultMap="accountRegisterResultMap" parameterType="com.ncvas.payment.entity.AccountRegisterDTO">
+		SELECT * FROM (
+			SELECT 
+				T.*,
+				ROWNUM AS RN
+			FROM (SELECT * FROM NJCC_ACCOUNT_REGISTER
+				<choose>
+						<when test="dto.orders != null and dto.orders !='' ">
+							ORDER BY ${dto.orders}
+						</when>
+						<otherwise>
+							ORDER BY CREATED DESC
+						</otherwise>
+				</choose>
+			)T
+			WHERE 
+				ROWNUM &lt;= #{endNum}
+				<include refid="queryParams"></include>
+		) WHERE RN &gt; #{beginNum}
+	</select>
+	
+	<select id="count" resultType="int" parameterType="com.ncvas.payment.entity.AccountRegisterDTO">
+		SELECT 
+			COUNT(*)
+		FROM NJCC_ACCOUNT_REGISTER
+		WHERE
+			1=1
+		<include refid="queryParams"></include>
+	</select>
+
+	<select id="reportsRegisterPeople" resultType="int" parameterType="com.ncvas.payment.entity.AccountRegisterDTO">
+		SELECT count(ID) FROM NJCC_ACCOUNT_REGISTER
+		WHERE
+		1=1
+		<if test="dto.beginTime != null"> AND CREATED between
+			#{dto.beginTime} and #{dto.endTime}</if>
+	</select>
+
+	<select id="reportsPeopleAndType" resultMap="accountRegisterResultMap2" parameterType="com.ncvas.payment.entity.AccountRegisterDTO">
+		SELECT DISTINCT i.REGTYPE, nvl(s.SubNum, 0) AS NUMBER_OF_PEOPLE
+		FROM NJCC_ACCOUNT_REGISTER i
+		LEFT JOIN (SELECT REGTYPE, COUNT(1) AS SubNum
+		FROM NJCC_ACCOUNT_REGISTER
+		WHERE 1 = 1
+		<if test="dto.beginTime != null"> AND CREATED between
+			#{dto.beginTime} and #{dto.endTime}</if>
+		GROUP BY REGTYPE) s ON i.REGTYPE = s.REGTYPE
+	</select>
+
+	<select id="queryReqBizType" resultMap="accountRegisterResultMap2">
+		SELECT
+		REGTYPE
+		FROM
+		NJCC_ACCOUNT_REGISTER
+		group by REGTYPE
+	</select>
+</mapper>

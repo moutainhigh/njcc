@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncvas.common.dao.AccountQuickpaymentBankCardMapper">
+
+	<resultMap type="com.ncvas.payment.entity.AccountQuickpaymentBankCard" id="accountQuickpaymentBankCardResultMap">
+		<id property="id" column="ID" />
+		<result property="loginName" column="LOGIN_NAME" />
+		<result property="bankAcct" column="BANK_ACCT" />
+		<result property="bankCode" column="BANK_CODE" />
+		<result property="idType" column="ID_TYPE" />
+		<result property="idNo" column="ID_NO" />
+		<result property="mobile" column="MOBILE" />
+		<result property="bindType" column="BIND_TYPE" />
+	</resultMap>
+
+    <insert id="add" parameterType="com.ncvas.payment.entity.AccountQuickpaymentBankCard">
+    	<selectKey keyProperty="id" resultType="String" order="BEFORE">
+			SELECT SEQ_NJCC_ACCOUNT_BANK_CARD.NEXTVAL FROM DUAL
+		</selectKey>
+	      	INSERT INTO NJCC_ACCOUNT_BANK_CARD
+	      		(ID,LOGIN_NAME,BANK_ACCT,BANK_CODE,ID_TYPE,ID_NO,MOBILE,BIND_TYPE,CREATED) VALUES
+	      		(
+	     		#{id, jdbcType=VARCHAR},
+				#{loginName, jdbcType=VARCHAR},
+				#{bankAcct, jdbcType=VARCHAR},
+				#{bankCode, jdbcType=VARCHAR},
+				#{idType, jdbcType=VARCHAR},
+				#{idNo, jdbcType=VARCHAR},
+				#{mobile, jdbcType=VARCHAR},
+				#{bindType, jdbcType=VARCHAR},
+				SYSDATE
+	      		)
+	</insert>
+	
+	<update id="update" parameterType="com.ncvas.payment.entity.AccountQuickpaymentBankCard">
+		UPDATE NJCC_ACCOUNT_BANK_CARD
+		<set>
+			<if test="loginName !=null and loginName !=''">
+				LOGIN_NAME		=		#{loginName, jdbcType=VARCHAR},
+			</if>
+			<if test="bankAcct !=null and bankAcct !=''">
+				BANK_ACCT		=		#{bankAcct, jdbcType=VARCHAR},
+			</if>
+			<if test="bankCode !=null and bankCode !=''">
+				BANK_CODE		=			#{bankCode, jdbcType=VARCHAR},
+			</if>
+			<if test="idType !=null and idType !=''">
+				ID_TYPE		=		#{idType, jdbcType=VARCHAR},
+			</if>
+			<if test="idNo !=null and idNo !=''">
+				ID_NO		=		#{idNo, jdbcType=VARCHAR},
+			</if>
+			<if test="mobile !=null and mobile !=''">
+				MOBILE		=			#{mobile, jdbcType=VARCHAR},
+			</if>
+			<if test="bindType !=null and bindType !=''">
+				BIND_TYPE		=		#{bindType, jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+	
+	<select id="get" resultMap="accountQuickpaymentBankCardResultMap">
+			SELECT * FROM 
+          			NJCC_ACCOUNT_BANK_CARD
+      					WHERE
+      					ID = #{id}
+	</select>
+	
+	<select id="query" resultMap="accountQuickpaymentBankCardResultMap" parameterType="com.ncvas.payment.entity.AccountQuickpaymentBankCardDTO">
+		SELECT * FROM (
+			SELECT 
+				T.*,
+				ROWNUM AS RN
+			FROM (SELECT * FROM NJCC_ACCOUNT_BANK_CARD
+				where 1 =1
+				<if test="dto.loginName != null and dto.loginName != '' ">AND LOGIN_NAME = #{dto.loginName}</if>
+				<if test="dto.bankAcct != null and dto.bankAcct != '' ">AND BANK_ACCT = #{dto.bankAcct}</if>
+				<if test="dto.bankCode != null and dto.bankCode != ''">AND BANK_CODE = #{dto.bankCode}</if>
+				<if test="dto.idType != null and dto.idType != ''">AND ID_TYPE = #{dto.idType}</if>
+				<if test="dto.idNo != null and dto.idNo != ''">AND ID_NO = #{dto.idNo}</if>
+				<if test="dto.mobile != null and dto.mobile != ''">AND MOBILE = #{dto.mobile}</if>
+				<if test="dto.bindType != null and dto.bindType != ''">AND BIND_TYPE = #{dto.bindType}</if>
+				<choose>
+						<when test="dto.orders != null and dto.orders !='' ">
+							ORDER BY ${dto.orders}
+						</when>
+						<otherwise>
+							ORDER BY CREATED DESC
+						</otherwise>
+				</choose>
+			)T
+			WHERE 
+				ROWNUM &lt;= #{endNum}
+		) WHERE RN &gt; #{beginNum}
+	</select>
+	
+	<select id="count" resultType="int" parameterType="com.ncvas.payment.entity.AccountQuickpaymentBankCardDTO">
+		SELECT 
+			COUNT(*)
+		FROM NJCC_ACCOUNT_BANK_CARD
+		WHERE
+			1=1
+		<if test="dto.loginName != null and dto.loginName != '' ">AND LOGIN_NAME = #{dto.loginName}</if>
+		<if test="dto.bankAcct != null and dto.bankAcct != '' ">AND BANK_ACCT = #{dto.bankAcct}</if>
+		<if test="dto.bankCode != null and dto.bankCode != ''">AND BANK_CODE = #{dto.bankCode}</if>
+		<if test="dto.idType != null and dto.idType != ''">AND ID_TYPE = #{dto.idType}</if>
+		<if test="dto.idNo != null and dto.idNo != ''">AND ID_NO = #{dto.idNo}</if>
+		<if test="dto.mobile != null and dto.mobile != ''">AND MOBILE = #{dto.mobile}</if>
+		<if test="dto.bindType != null and dto.bindType != ''">AND BIND_TYPE = #{dto.bindType}</if>
+	</select>
+</mapper>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncvas.common.dao.AccountQuickPayOrderMapper">
+
+	<resultMap type="com.ncvas.payment.entity.AccountQuickPayOrder" id="accountQuickPayOrderResultMap">
+		<id property="id" column="ID" />
+		<result property="orderID" column="ORDER_ID" />
+		<result property="loginName" column="LOGIN_NAME" />
+		<result property="amount" column="AMOUNT" />
+		<result property="payeeAliasCode" column="PAYEE_ALIAS_CODE" />
+		<result property="status" column="STATUS" />
+		<result property="remark" column="REMARK" />
+		<result property="deviceid" column="DEVICEID"/>
+		<result property="devicename" column="DEVICENAME"/>
+		<result property="devicemac" column="DEVICEMAC"/>
+		<result property="devicemodel" column="DEVICEMODEL"/>
+		<result property="sourcetype" column="SOURCETYPE"/>
+		<result property="created" column="CREATED" />
+		<result property="aliascode" column="ALIASCODE" />
+		<result property="accbalance" column="ACCBALANCE" />
+		<result property="mstaliascode" column="MSTALIASCODE" />
+		<result property="reqBizType" column="REQ_BIZ_TYPE"/>
+		<result property="lastUpdateTime" column="LASTUPDATETIME"/>
+	</resultMap>
+
+	<insert id="add" parameterType="com.ncvas.payment.entity.AccountQuickPayOrder">
+		<selectKey keyProperty="id" resultType="String" order="BEFORE">
+			SELECT SEQ_NJCC_ACCOUNT_QUICKPAYORDER.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO NJCC_ACCOUNT_QUICK_PAY_ORDER
+		(ID,ORDER_ID,LOGIN_NAME,AMOUNT,PAYEE_ALIAS_CODE,STATUS,REMARK,DEVICEID,DEVICENAME,DEVICEMAC,DEVICEMODEL,SOURCETYPE,CREATED,ALIASCODE,ACCBALANCE,MSTALIASCODE,REQ_BIZ_TYPE) VALUES
+		(
+		#{id, jdbcType=VARCHAR},
+		#{orderID, jdbcType=VARCHAR},
+		#{loginName, jdbcType=VARCHAR},
+		#{amount, jdbcType=VARCHAR},
+		#{payeeAliasCode, jdbcType=VARCHAR},
+		#{status, jdbcType=VARCHAR},
+		#{remark, jdbcType=VARCHAR},
+		#{deviceid, jdbcType=VARCHAR},
+		#{devicename, jdbcType=VARCHAR},
+		#{devicemac, jdbcType=VARCHAR},
+		#{devicemodel, jdbcType=VARCHAR},
+		#{sourcetype, jdbcType=VARCHAR},
+		SYSDATE,
+		#{aliascode, jdbcType=VARCHAR},
+		#{accbalance, jdbcType=VARCHAR},
+		#{mstaliascode, jdbcType=VARCHAR},
+		#{reqBizType, jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.ncvas.payment.entity.AccountQuickPayOrder">
+		UPDATE NJCC_ACCOUNT_QUICK_PAY_ORDER
+		<set>
+			<if test="orderID !=null and orderID !=''">
+				ORDER_ID		=		#{orderID, jdbcType=VARCHAR},
+			</if>
+			<if test="loginName !=null and loginName !=''">
+				LOGIN_NAME		=		#{loginName, jdbcType=VARCHAR},
+			</if>
+			<if test="amount !=null and amount !=''">
+				AMOUNT		=			#{amount, jdbcType=VARCHAR},
+			</if>
+			<if test="payeeAliasCode !=null and payeeAliasCode !=''">
+				PAYEE_ALIAS_CODE		=		#{payeeAliasCode, jdbcType=VARCHAR},
+			</if>
+			<if test="status !=null and status !=''">
+				STATUS		=		#{status, jdbcType=VARCHAR},
+			</if>
+			<if test="remark !=null and remark !=''">
+				REMARK		=		#{remark, jdbcType=VARCHAR},
+			</if>
+			<if test="deviceid != null and deviceid != ''">DEVICEID=#{deviceid, jdbcType=VARCHAR},</if>
+			<if test="devicename != null and devicename != ''">DEVICENAME=#{devicename, jdbcType=VARCHAR},</if>
+			<if test="devicemac != null and devicemac != ''">DEVICEMAC=#{devicemac, jdbcType=VARCHAR},</if>
+			<if test="devicemodel != null and devicemodel != ''">DEVICEMODEL=#{devicemodel, jdbcType=VARCHAR},</if>
+			<if test="sourcetype != null and sourcetype != ''">SOURCETYPE=#{sourcetype, jdbcType=VARCHAR},</if>
+			<if test="aliascode !=null and aliascode !=''">
+				ALIASCODE		=		#{aliascode, jdbcType=VARCHAR},
+			</if>
+			<if test="accbalance !=null and accbalance !=''">
+				ACCBALANCE		=		#{accbalance, jdbcType=VARCHAR},
+			</if>
+			<if test="mstaliascode !=null and mstaliascode !=''">
+				MSTALIASCODE		=		#{mstaliascode, jdbcType=VARCHAR},
+			</if>
+			<if test="reqBizType !=null and reqBizType !=''">
+				REQ_BIZ_TYPE		=		#{reqBizType, jdbcType=VARCHAR},
+			</if>
+			LASTUPDATETIME = SYSDATE
+		</set>
+		where ID = #{id}
+	</update>
+
+	<select id="get" resultMap="accountQuickPayOrderResultMap">
+		SELECT * FROM
+		NJCC_ACCOUNT_QUICK_PAY_ORDER
+		WHERE
+		ID = #{id}
+	</select>
+
+	<select id="query" resultMap="accountQuickPayOrderResultMap" parameterType="com.ncvas.payment.entity.AccountQuickPayOrderDTO">
+		SELECT * FROM (
+		SELECT
+		T.*,
+		ROWNUM AS RN
+		FROM (SELECT * FROM NJCC_ACCOUNT_QUICK_PAY_ORDER
+		where 1 =1
+		<if test="dto.loginName != null and dto.loginName != '' ">AND LOGIN_NAME = #{dto.loginName}</if>
+		<if test="dto.orderID != null and dto.orderID != '' ">AND ID_NAME = #{dto.orderID}</if>
+		<if test="dto.amount != null and dto.amount != ''">AND ID_TYPE = #{dto.amount}</if>
+		<if test="dto.payeeAliasCode != null and dto.payeeAliasCode != ''">AND ID_NO = #{dto.payeeAliasCode}</if>
+		<if test="dto.status != null and dto.status != ''">AND ID_NO = #{dto.status}</if>
+		<if test="dto.deviceid != null and dto.deviceid != ''">AND DEVICEID=#{dto.deviceid}</if>
+		<if test="dto.devicename != null and dto.devicename != ''">AND DEVICENAME=#{dto.devicename}</if>
+		<if test="dto.devicemac != null and dto.devicemac != ''">AND DEVICEMAC=#{dto.devicemac}</if>
+		<if test="dto.devicemodel != null and dto.devicemodel != ''">AND DEVICEMODEL=#{dto.devicemodel}</if>
+		<if test="dto.sourcetype != null and dto.sourcetype != ''">AND SOURCETYPE=#{dto.sourcetype}</if>
+		<if test="dto.aliascode != null and dto.aliascode != ''">AND ALIASCODE=#{dto.aliascode}</if>
+		<if test="dto.accbalance != null and dto.accbalance != ''">AND ACCBALANCE=#{dto.accbalance}</if>
+		<if test="dto.mstaliascode != null and dto.mstaliascode != ''">AND MSTALIASCODE=#{dto.mstaliascode}</if>
+		<if test="dto.reqBizType != null and dto.reqBizType != ''"> AND REQ_BIZ_TYPE  = #{dto.reqBizType}</if>
+		<if test="dto.reqBizTypeList != null and dto.reqBizTypeList.size()>0">AND
+			REQ_BIZ_TYPE IN
+			<foreach collection="dto.reqBizTypeList" index="index" item="item" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<choose>
+			<when test="dto.orders != null and dto.orders !='' ">
+				ORDER BY ${dto.orders}
+			</when>
+			<otherwise>
+				ORDER BY CREATED DESC
+			</otherwise>
+		</choose>
+		)T
+		WHERE
+		ROWNUM &lt;= #{endNum}
+		) WHERE RN &gt; #{beginNum}
+	</select>
+
+	<select id="count" resultType="int" parameterType="com.ncvas.payment.entity.AccountQuickPayOrderDTO">
+		SELECT
+		COUNT(*)
+		FROM NJCC_ACCOUNT_QUICK_PAY_ORDER
+		WHERE
+		1=1
+		<if test="dto.loginName != null and dto.loginName != '' ">AND LOGIN_NAME = #{dto.loginName}</if>
+		<if test="dto.orderID != null and dto.orderID != '' ">AND ID_NAME = #{dto.orderID}</if>
+		<if test="dto.amount != null and dto.amount != ''">AND ID_TYPE = #{dto.amount}</if>
+		<if test="dto.payeeAliasCode != null and dto.payeeAliasCode != ''">AND ID_NO = #{dto.payeeAliasCode}</if>
+		<if test="dto.status != null and dto.status != ''">AND ID_NO = #{dto.status}</if>
+		<if test="dto.deviceid != null and dto.deviceid != ''">AND DEVICEID=#{dto.deviceid, jdbcType=VARCHAR}</if>
+		<if test="dto.devicename != null and dto.devicename != ''">AND DEVICENAME=#{dto.devicename, jdbcType=VARCHAR}</if>
+		<if test="dto.devicemac != null and dto.devicemac != ''">AND DEVICEMAC=#{dto.devicemac, jdbcType=VARCHAR}</if>
+		<if test="dto.devicemodel != null and dto.devicemodel != ''">AND DEVICEMODEL=#{dto.devicemodel, jdbcType=VARCHAR}</if>
+		<if test="dto.sourcetype != null and dto.sourcetype != ''">AND SOURCETYPE=#{dto.sourcetype, jdbcType=VARCHAR}</if>
+		<if test="dto.aliascode != null and dto.aliascode != ''">AND ALIASCODE=#{dto.aliascode, jdbcType=VARCHAR}</if>
+		<if test="dto.accbalance != null and dto.accbalance != ''">AND ACCBALANCE=#{dto.accbalance, jdbcType=VARCHAR}</if>
+		<if test="dto.mstaliascode != null and dto.mstaliascode != ''">AND MSTALIASCODE=#{dto.mstaliascode, jdbcType=VARCHAR}</if>
+		<if test="dto.reqBizType != null and dto.reqBizType != ''"> AND REQ_BIZ_TYPE  = #{dto.reqBizType}</if>
+		<if test="dto.reqBizTypeList != null and dto.reqBizTypeList.size()>0">AND
+			REQ_BIZ_TYPE IN
+			<foreach collection="dto.reqBizTypeList" index="index" item="item" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="getByOrderId" resultMap="accountQuickPayOrderResultMap">
+		SELECT * FROM
+		NJCC_ACCOUNT_QUICK_PAY_ORDER
+		WHERE
+		1=1
+		<if test="orderID != null and orderID != ''"> AND ORDER_ID = #{orderID}</if>
+	</select>
+
+	<update id="updateStatus">
+		UPDATE NJCC_ACCOUNT_QUICK_PAY_ORDER
+		<set>
+			<if test="status !=null and status !=''">
+				STATUS = #{status, jdbcType=VARCHAR},
+			</if>
+			<if test="remark !=null and remark !=''">
+				REMARK = #{remark, jdbcType=VARCHAR},
+			</if>
+			LASTUPDATETIME = SYSDATE
+		</set>
+		where ORDER_ID = #{orderID}
+	</update>
+</mapper>

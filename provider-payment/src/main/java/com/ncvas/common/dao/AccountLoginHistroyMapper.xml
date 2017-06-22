@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncvas.common.dao.AccountLoginHistroyMapper">
+
+	<resultMap type="com.ncvas.payment.entity.AccountLoginHistory" id="memberHistroyResultMap">
+		<id property="id" column="ID" />
+		<result property="memberCode" column="MEMBER_CODE" />
+		<result property="memberName" column="MEMBER_NAME" />
+		<result property="mobile" column="MOBILE" />
+		<result property="custName" column="CUST_NAME" />
+		<result property="created" column="CREATED"/>
+		<result property="reqBizType" column="REQ_BIZ_TYPE"/>
+	</resultMap>
+
+    <insert id="add" parameterType="com.ncvas.payment.entity.AccountLoginHistory">
+    	<selectKey keyProperty="id" resultType="String" order="BEFORE">
+			SELECT SEQ_NJCC_ACCOUNT_MEMBER_HIS.NEXTVAL FROM DUAL
+		</selectKey>
+	      	INSERT INTO NJCC_ACCOUNT_MEMBER_HIS
+	      		(ID, MEMBER_CODE,MEMBER_NAME,MOBILE,CUST_NAME,CREATED, REQ_BIZ_TYPE)
+	    	VALUES
+ 	      		(
+ 	      		#{id, jdbcType=VARCHAR},
+ 	      		#{memberCode, jdbcType=VARCHAR},
+ 	      		#{memberName, jdbcType=VARCHAR},
+				#{mobile, jdbcType=VARCHAR},
+				#{custName, jdbcType=VARCHAR},
+				SYSDATE,
+				#{reqBizType, jdbcType=VARCHAR}
+	      		)
+	</insert>
+	
+	<update id="update" parameterType="com.ncvas.payment.entity.AccountLoginHistory">
+		UPDATE NJCC_ACCOUNT_MEMBER_HIS
+		<set>
+			<if test="memberCode !=null and memberCode !=''">
+			MEMBER_CODE		=		#{memberCode, jdbcType=VARCHAR},
+			</if>
+			<if test="membetName !=null and membetName !=''">
+			MEMBET_NAME			=		#{membetName, jdbcType=VARCHAR},
+			</if>
+			<if test="mobile !=null and mobile !=''">
+			MOBILE			=		#{mobile, jdbcType=VARCHAR},
+			</if>
+			<if test="custName !=null and custName !=''">
+			CUST_NAME		    =		#{name, jdbcType=VARCHAR},
+			</if>
+			<if test="reqBizType !=null and reqBizType !=''">
+				REQ_BIZ_TYPE		=		#{reqBizType, jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+	
+	<select id="query" resultMap="memberHistroyResultMap" parameterType="com.ncvas.payment.entity.AccountLoginHistoryDTO">
+		SELECT * FROM (
+			SELECT 
+				T.*,
+				ROWNUM AS RN
+			FROM (SELECT * FROM NJCC_ACCOUNT_MEMBER_HIS
+				<choose>
+					<when test="dto.orders != null and dto.orders !='' ">
+						ORDER BY ${dto.orders}
+					</when>
+					<otherwise>
+						ORDER BY CREATED DESC
+					</otherwise>
+				</choose>
+			 )T 
+			WHERE 
+				ROWNUM &lt;= #{endNum}
+				<if test="dto.id != null and dto.id != ''">AND ID = #{dto.id}</if>
+				<if test="dto.reqBizType != null and dto.reqBizType != ''"> AND REQ_BIZ_TYPE  = #{dto.reqBizType}</if>
+				<if test="dto.memberCode != null and dto.memberCode != ''"> AND MEMBER_CODE = #{dto.memberCode}</if>
+				<if test="dto.memberName != null and dto.memberName != ''"> AND MEMBER_NAME  = #{dto.memberName}</if>
+		        <if test="dto.creationtime != null and  dto.creationtime !=''"> AND CREATED between
+			to_date(#{dto.creationtime},'yyyy-MM-dd HH24:mi:ss') and  to_date(#{dto.creationendtime},'yyyy-MM-dd HH24:mi:ss')</if>
+		) WHERE RN &gt; #{beginNum}
+	</select>
+	
+	<select id="count" resultType="int" parameterType="com.ncvas.payment.entity.AccountLoginHistoryDTO">
+		SELECT 
+			COUNT(*)
+		FROM NJCC_ACCOUNT_MEMBER_HIS
+		WHERE 
+			1=1
+			<if test="dto.id != null and dto.id != ''">AND ID = #{dto.id}</if>
+			<if test="dto.reqBizType != null and dto.reqBizType != ''"> AND REQ_BIZ_TYPE  = #{dto.reqBizType}</if>
+			<if test="dto.memberCode != null and dto.memberCode != ''"> AND MEMBER_CODE = #{dto.memberCode}</if>
+			<if test="dto.memberName != null and dto.memberName != ''"> AND MEMBER_NAME  = #{dto.memberName}</if>
+		    <if test="dto.creationtime != null and  dto.creationtime !=''"> AND CREATED between
+			to_date(#{dto.creationtime},'yyyy-MM-dd HH24:mi:ss') and  to_date(#{dto.creationendtime},'yyyy-MM-dd HH24:mi:ss')</if>
+	</select>
+	
+	<select id="get" resultMap="memberHistroyResultMap">
+		SELECT 
+			T.*
+		FROM NJCC_ACCOUNT_MEMBER_HIS T
+		WHERE ID = #{id}
+	</select>
+
+	<select id="reportsPeople" resultType="int" parameterType="com.ncvas.payment.entity.AccountLoginHistoryDTO">
+		SELECT
+		COUNT(*)
+		FROM NJCC_ACCOUNT_MEMBER_HIS
+		WHERE
+		1=1
+		<if test="dto.startTime != null and  dto.startTime !=''"> AND CREATED between
+			#{dto.startTime} and  #{dto.endTime}</if>
+	</select>
+	
+</mapper>
