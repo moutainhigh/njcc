@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncvas.common.dao.AccountBindNjccCardMapper">
+
+	<resultMap type="com.ncvas.payment.entity.AccountBindNjccCard" id="accountBindNjccCardResultMap">
+		<id property="id" column="ID" />
+		<result property="aliasCode" column="ALIASCODE" />
+		<result property="memberCode" column="MEMBERCODE" />
+		<result property="memberName" column="MEMBERNAME" />
+		<result property="socialCode" column="SOCIALCODE"/>
+		<result property="registered" column="REGISTERED"/>
+		<result property="bindingStatus" column="BINDINGSTATUS"/>
+		<result property="remark" column="REMARK"/>
+		<result property="created" column="CREATED"/>
+		<result property="loginName" column="LOGIN_NAME"/>
+		<result property="cardCategory" column="CARD_CATEGORY"/>
+		<result property="reqBizType" column="REQ_BIZ_TYPE"/>
+	</resultMap>
+
+    <insert id="add" parameterType="com.ncvas.payment.entity.AccountBindNjccCard">
+    	<selectKey keyProperty="id" resultType="String" order="BEFORE">
+			SELECT SEQ_NJCC_ACCOUNT_BIND_NJCCCARD.NEXTVAL FROM DUAL
+		</selectKey>
+	      	INSERT INTO NJCC_ACCOUNT_BIND_NJCCCARD
+	      		(ID, ALIASCODE,MEMBERCODE,MEMBERNAME,SOCIALCODE,REGISTERED,BINDINGSTATUS,REMARK,CREATED,LOGIN_NAME,CARD_CATEGORY, REQ_BIZ_TYPE)
+	    	VALUES
+ 	      		(
+ 	      		#{id, jdbcType=VARCHAR},
+ 	      		#{aliasCode, jdbcType=VARCHAR},
+ 	      		#{memberCode, jdbcType=VARCHAR},
+ 	      		#{memberName, jdbcType=VARCHAR},
+				#{socialCode, jdbcType=VARCHAR},
+				#{registered, jdbcType=VARCHAR},
+				#{bindingStatus, jdbcType=VARCHAR},
+				#{remark, jdbcType=VARCHAR},
+				SYSDATE,
+				#{loginName, jdbcType=VARCHAR},
+				#{cardCategory, jdbcType=VARCHAR},
+				#{reqBizType, jdbcType=VARCHAR}
+	      		)
+	</insert>
+	
+	<update id="update" parameterType="com.ncvas.payment.entity.AccountBindNjccCard">
+		UPDATE NJCC_ACCOUNT_BIND_NJCCCARD
+		<set>
+			<if test="aliasCode !=null and aliasCode !=''">
+				ALIASCODE		=		#{aliasCode, jdbcType=VARCHAR},
+			</if>
+			<if test="memberCode !=null and memberCode !=''">
+				MEMBERCODE			=		#{memberCode, jdbcType=VARCHAR},
+			</if>
+			<if test="memberName !=null and memberName !=''">
+				MEMBERNAME		=		#{memberName, jdbcType=VARCHAR},
+			</if>
+			<if test="socialCode !=null and socialCode !=''">
+				SOCIALCODE			=		#{socialCode, jdbcType=VARCHAR},
+			</if>
+			<if test="registered !=null and registered !=''">
+				REGISTERED			=		#{registered, jdbcType=VARCHAR},
+			</if>
+			<if test="bindingStatus !=null and bindingStatus !=''">
+				BINDINGSTATUS			=		#{bindingStatus, jdbcType=VARCHAR},
+			</if>
+			<if test="remark !=null and remark !=''">
+				REMARK			=		#{remark, jdbcType=VARCHAR},
+			</if>
+			<if test="loginName !=null and loginName !=''">
+				LOGIN_NAME			=		#{loginName, jdbcType=VARCHAR},
+			</if>
+			<if test="cardCategory !=null and cardCategory !=''">
+				CARD_CATEGORY			=		#{cardCategory, jdbcType=VARCHAR},
+			</if>
+			<if test="reqBizType !=null and reqBizType !=''">
+				REQ_BIZ_TYPE			=		#{reqBizType, jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+	
+	<select id="query" resultMap="accountBindNjccCardResultMap" parameterType="com.ncvas.payment.entity.AccountBindNjccCardDTO">
+		SELECT * FROM (
+		SELECT
+		T.*,
+		ROWNUM AS RN
+		FROM (SELECT * FROM NJCC_ACCOUNT_BIND_NJCCCARD
+		WHERE 1=1
+		<if test="dto.aliasCode != null and dto.aliasCode != '' ">AND aliasCode = #{dto.aliasCode}</if>
+		<if test="dto.memberCode != null and dto.memberCode != '' ">AND memberCode = #{dto.memberCode}</if>
+		<if test="dto.memberName != null and dto.memberName != ''">AND memberName = #{dto.memberName}</if>
+		<if test="dto.socialCode != null and dto.socialCode != ''">AND socialCode = #{dto.socialCode}</if>
+		<if test="dto.registered != null and dto.registered != ''">AND registered = #{dto.registered}</if>
+		<if test="dto.bindingStatus != null and dto.bindingStatus != ''">AND bindingStatus = #{dto.bindingStatus}</if>
+		<if test="dto.cardCategory != null and dto.cardCategory != ''">AND CARD_CATEGORY = #{dto.cardCategory}</if>
+		<if test="dto.reqBizType != null and dto.reqBizType != ''"> AND REQ_BIZ_TYPE  = #{dto.reqBizType}</if>
+		<if test="dto.reqBizTypeList != null and dto.reqBizTypeList.size()>0">AND
+			REQ_BIZ_TYPE IN
+			<foreach collection="dto.reqBizTypeList" index="index" item="item" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<choose>
+			<when test="dto.orders != null and dto.orders !='' ">
+				ORDER BY ${dto.orders}
+			</when>
+			<otherwise>
+				ORDER BY CREATED DESC
+			</otherwise>
+		</choose>
+		)T
+		WHERE
+		ROWNUM &lt;= #{endNum}
+		) WHERE RN &gt; #{beginNum}
+	</select>
+	<select id="count" resultType="int" parameterType="com.ncvas.payment.entity.AccountBindNjccCardDTO">
+		SELECT
+		COUNT(*)
+		FROM NJCC_ACCOUNT_BIND_NJCCCARD
+		WHERE
+		1=1
+		<if test="dto.aliasCode != null and dto.aliasCode != '' ">AND aliasCode = #{dto.aliasCode}</if>
+		<if test="dto.memberCode != null and dto.memberCode != '' ">AND memberCode = #{dto.memberCode}</if>
+		<if test="dto.memberName != null and dto.memberName != ''">AND memberName = #{dto.memberName}</if>
+		<if test="dto.socialCode != null and dto.socialCode != ''">AND socialCode = #{dto.socialCode}</if>
+		<if test="dto.registered != null and dto.registered != ''">AND registered = #{dto.registered}</if>
+		<if test="dto.bindingStatus != null and dto.bindingStatus != ''">AND bindingStatus = #{dto.bindingStatus}</if>
+		<if test="dto.reqBizType != null and dto.reqBizType != ''"> AND REQ_BIZ_TYPE  = #{dto.reqBizType}</if>
+		<if test="dto.reqBizTypeList != null and dto.reqBizTypeList.size()>0">AND
+			REQ_BIZ_TYPE IN
+			<foreach collection="dto.reqBizTypeList" index="index" item="item" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+	<select id="get" resultMap="accountBindNjccCardResultMap">
+		SELECT 
+			T.*
+		FROM NJCC_ACCOUNT_BIND_NJCCCARD T
+		WHERE ID = #{id}
+	</select>
+</mapper>
