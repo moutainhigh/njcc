@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncvas.common.dao.AccountWithdrawMapper">
+
+	<resultMap type="com.ncvas.payment.entity.AccountWithdraw" id="accountWithdrawResultMap">
+		<id property="id" column="ID" />
+		<result property="loginName" column="LOGIN_NAME" />
+		<result property="amount" column="AMOUNT" />
+		<result property="bankAcct" column="BANK_ACCT" />
+		<result property="aliascode" column="ALIAS_CODE" />
+	</resultMap>
+
+    <insert id="add" parameterType="com.ncvas.payment.entity.AccountWithdraw">
+    	<selectKey keyProperty="id" resultType="String" order="BEFORE">
+			SELECT SEQ_NJCC_ACCOUNT_WITHDRAW.NEXTVAL FROM DUAL
+		</selectKey>
+	      	INSERT INTO NJCC_ACCOUNT_WITHDRAW
+	      		(ID,LOGIN_NAME,AMOUNT,BANK_ACCT,ALIAS_CODE,CREATED) VALUES
+	      		(
+	     		#{id, jdbcType=VARCHAR},
+				#{loginName, jdbcType=VARCHAR},
+				#{amount, jdbcType=VARCHAR},
+				#{bankAcct, jdbcType=VARCHAR},
+				#{aliascode, jdbcType=VARCHAR},
+				SYSDATE
+	      		)
+	</insert>
+	
+	<update id="update" parameterType="com.ncvas.payment.entity.AccountWithdraw">
+		UPDATE NJCC_ACCOUNT_WITHDRAW
+		<set>
+			<if test="loginName !=null and loginName !=''">
+				LOGIN_NAME		=		#{loginName, jdbcType=VARCHAR},
+			</if>
+			<if test="amount !=null and amount !=''">
+				AMOUNT		=		#{amount, jdbcType=VARCHAR},
+			</if>
+			<if test="bankAcct !=null and bankAcct !=''">
+				BANK_ACCT		=			#{bankAcct, jdbcType=VARCHAR},
+			</if>
+			<if test="aliascode !=null and aliascode !=''">
+				ALIAS_CODE		=		#{aliascode, jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+	
+	<select id="get" resultMap="accountWithdrawResultMap">
+			SELECT * FROM 
+          			NJCC_ACCOUNT_WITHDRAW
+      					WHERE
+      					ID = #{id}
+	</select>
+	
+	<select id="query" resultMap="accountWithdrawResultMap" parameterType="com.ncvas.payment.entity.AccountWithdrawDTO">
+		SELECT * FROM (
+			SELECT 
+				T.*,
+				ROWNUM AS RN
+			FROM (SELECT * FROM NJCC_ACCOUNT_WITHDRAW
+				<choose>
+						<when test="dto.orders != null and dto.orders !='' ">
+							ORDER BY ${dto.orders}
+						</when>
+						<otherwise>
+							ORDER BY CREATED DESC
+						</otherwise>
+				</choose>
+			)T
+			WHERE 
+				ROWNUM &lt;= #{endNum}
+		) WHERE RN &gt; #{beginNum}
+	</select>
+	
+	<select id="count" resultType="int" parameterType="com.ncvas.payment.entity.AccountWithdrawDTO">
+		SELECT 
+			COUNT(*)
+		FROM NJCC_ACCOUNT_WITHDRAW
+		WHERE
+			1=1
+	</select>
+</mapper>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncvas.common.dao.AccountUsertransferMapper">
+
+	<resultMap type="com.ncvas.payment.entity.AccountUsertransfer" id="accountUsertransferResultMap">
+		<id property="id" column="ID" />
+		<result property="orderId" column="ORDER_ID" />
+		<result property="ordertime" column="ORDERTIME" />
+		<result property="orderno" column="ORDERNO" />
+		<result property="orderamt" column="ORDERAMT" />
+		<result property="outacccode" column="OUTACCCODE"/>
+		<result property="inacccode" column="INACCCODE"/>
+		<result property="outaccbalance" column="OUTACCBALANCE"/>
+		<result property="inaccbalance" column="INACCBALANCE"/>
+		<result property="transtype" column="TRANSTYPE"/>
+		<result property="status" column="STATUS"/>
+		<result property="remark" column="REMARK"/>
+		<result property="loginName" column="LOGIN_NAME"/>
+		<result property="msg" column="MSG"/>
+		<result property="created" column="CREATED"/>
+		<result property="reqBizType" column="REQ_BIZ_TYPE"/>
+	</resultMap>
+
+    <insert id="add" parameterType="com.ncvas.payment.entity.AccountUsertransfer">
+    	<selectKey keyProperty="id" resultType="String" order="BEFORE">
+			SELECT SEQ_NJCC_ACCOUNT_USERTRANSFER.NEXTVAL FROM DUAL
+		</selectKey>
+	      	INSERT INTO NJCC_ACCOUNT_USERTRANSFER
+	      		(ID, ORDER_ID,ORDERTIME, ORDERNO, ORDERAMT,OUTACCCODE,INACCCODE,OUTACCBALANCE,INACCBALANCE,
+	      		TRANSTYPE,STATUS,REMARK,LOGIN_NAME,MSG,CREATED, REQ_BIZ_TYPE)
+	    	VALUES
+ 	      		(
+ 	      		#{id, jdbcType=VARCHAR},
+ 	      		#{orderId, jdbcType=VARCHAR},
+ 	      		#{ordertime, jdbcType=VARCHAR},
+				#{orderno, jdbcType=VARCHAR},
+				#{orderamt, jdbcType=VARCHAR},
+				#{outacccode, jdbcType=VARCHAR},
+				#{inacccode, jdbcType=VARCHAR},
+				#{outaccbalance, jdbcType=VARCHAR},
+				#{inaccbalance, jdbcType=VARCHAR},
+				#{transtype, jdbcType=VARCHAR},
+				#{status,jdbcType=INTEGER},
+				#{remark,jdbcType=VARCHAR},
+				#{loginName,jdbcType=VARCHAR},
+				#{msg,jdbcType=VARCHAR},
+				SYSDATE,
+				#{reqBizType, jdbcType=VARCHAR}
+	      		)
+	</insert>
+	
+	<select id="query" resultMap="accountUsertransferResultMap" parameterType="com.ncvas.payment.entity.AccountUsertransferDTO">
+		SELECT * FROM (
+			SELECT 
+				T.*,
+				ROWNUM AS RN
+			FROM (SELECT * FROM NJCC_ACCOUNT_USERTRANSFER
+				<choose>
+						<when test="dto.orders != null and dto.orders !='' ">
+							ORDER BY ${dto.orders}
+						</when>
+						<otherwise>
+							ORDER BY CREATED DESC
+						</otherwise>
+				</choose>
+			)T
+			WHERE 
+				ROWNUM &lt;= #{endNum}
+				<if test="dto.id != null">AND ID = #{dto.id}</if>
+				<if test="dto.outacccode != null and dto.outacccode !=''"> AND OUTACCCODE like '%'|| #{dto.outacccode}||'%' </if>
+				<if test="dto.transtype != null and dto.transtype !=''"> AND TRANSTYPE = #{dto.transtype}</if>
+				<if test="dto.reqBizType != null and dto.reqBizType != ''"> AND REQ_BIZ_TYPE  = #{dto.reqBizType}</if>
+				<if test="dto.reqBizTypeList != null and dto.reqBizTypeList.size()>0">AND
+					REQ_BIZ_TYPE IN
+					<foreach collection="dto.reqBizTypeList" index="index" item="item" open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+				<if test="dto.creationtime != null and  dto.creationtime !=''"> AND
+				to_date(ORDERTIME,'yyyy-MM-dd HH24:mi:ss') between
+				to_date(#{dto.creationtime},'yyyy-MM-dd HH24:mi:ss') and  to_date(#{dto.creationendtime},'yyyy-MM-dd HH24:mi:ss')</if>
+		) WHERE RN &gt; #{beginNum} 
+	</select>
+	
+	<select id="count" resultType="int" parameterType="com.ncvas.payment.entity.AccountUsertransferDTO">
+		SELECT 
+			COUNT(*)
+		FROM NJCC_ACCOUNT_USERTRANSFER
+		WHERE
+			1=1
+			<if test="dto.id != null">AND ID = #{dto.id}</if>
+			<if test="dto.outacccode != null and dto.outacccode !=''"> AND OUTACCCODE like '%'|| #{dto.outacccode}||'%' </if>
+			<if test="dto.transtype != null and dto.transtype !=''"> AND TRANSTYPE = #{dto.transtype}</if>
+			<if test="dto.reqBizType != null and dto.reqBizType != ''"> AND REQ_BIZ_TYPE  = #{dto.reqBizType}</if>
+			<if test="dto.reqBizTypeList != null and dto.reqBizTypeList.size()>0">AND
+				REQ_BIZ_TYPE IN
+				<foreach collection="dto.reqBizTypeList" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="dto.creationtime != null and  dto.creationtime !=''"> AND
+				to_date(ORDERTIME,'yyyy-MM-dd HH24:mi:ss') between
+				to_date(#{dto.creationtime},'yyyy-MM-dd HH24:mi:ss') and  to_date(#{dto.creationendtime},'yyyy-MM-dd HH24:mi:ss')</if>
+	</select>
+	
+</mapper>

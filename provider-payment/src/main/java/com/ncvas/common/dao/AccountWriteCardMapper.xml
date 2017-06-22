@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncvas.common.dao.AccountWriteCardMapper">
+
+	<resultMap type="com.ncvas.payment.entity.AccountWriteCard" id="writeCardResultMap">
+		<id property="id" column="ID" />
+		<result property="channelType" column="CHANNEL_TYPE"/>
+		<result property="orderId" column="ORDER_ID"/>
+		<result property="loginName" column="LOGIN_NAME"/>
+		<result property="aliascode" column="ALIASCODE" />
+		<result property="cardNo" column="CARD_NO"/>
+		<result property="writeType" column="WRITE_TYPE" />
+		<result property="status" column="STATUS" />
+		<result property="remark" column="REMARK"/>
+		<result property="created" column="CREATED"/>
+		<result property="writeTime" column="WRITE_TIME"/>
+	</resultMap>
+
+    <insert id="add" parameterType="com.ncvas.payment.entity.AccountWriteCard">
+    	<selectKey keyProperty="id" resultType="String" order="BEFORE">
+			SELECT SEQ_NJCC_WRITE_CARD.NEXTVAL FROM DUAL
+		</selectKey>
+	      	INSERT INTO NJCC_WRITE_CARD
+	      		(ID, CHANNEL_TYPE,ORDER_ID, LOGIN_NAME, ALIASCODE, CARD_NO,WRITE_TYPE,STATUS,REMARK,CREATED, WRITE_TIME)
+	    	VALUES
+ 	      		(
+ 	      		#{id, jdbcType=VARCHAR},
+ 	      		#{channelType, jdbcType=VARCHAR},
+ 	      		#{orderId, jdbcType=VARCHAR},
+ 	      		#{loginName, jdbcType=VARCHAR},
+ 	      		#{aliascode, jdbcType=VARCHAR},
+ 	      		#{cardNo, jdbcType=VARCHAR},
+ 	      		#{writeType, jdbcType=VARCHAR},
+ 	      		#{status, jdbcType=VARCHAR},
+ 	      		#{remark, jdbcType=VARCHAR},
+				SYSDATE,
+		        #{writeTime, jdbcType=VARCHAR}
+	      		)
+	</insert>
+	
+	<update id="update" parameterType="com.ncvas.payment.entity.AccountWriteCard">
+		UPDATE NJCC_WRITE_CARD
+		<set>
+			<if test="channelType !=null and channelType !=''">
+				CHANNEL_TYPE		=		#{channelType, jdbcType=VARCHAR},
+			</if>
+			<if test="orderId !=null and orderId !=''">
+				ORDER_ID		=		#{orderId, jdbcType=VARCHAR},
+			</if>
+			<if test="loginName !=null and loginName !=''">
+				LOGIN_NAME			=		#{loginName, jdbcType=VARCHAR},
+			</if>
+			<if test="aliascode !=null and aliascode !=''">
+				ALIASCODE		=		#{aliascode, jdbcType=VARCHAR},
+			</if>
+			<if test="cardNo !=null and cardNo !=''">
+				CARD_NO		=		#{cardNo, jdbcType=VARCHAR},
+			</if>
+			<if test="writeType !=null and writeType !=''">
+				WRITE_TYPE		=		#{writeType, jdbcType=VARCHAR},
+			</if>
+			<if test="status !=null and status !=''">
+				STATUS			=		#{status, jdbcType=VARCHAR},
+			</if>
+			<if test="remark !=null and remark !=''">
+				REMARK			=		#{remark, jdbcType=VARCHAR},
+			</if>
+			<if test=" writeTime !=null and writeTime !=''">
+				WRITE_TIME			=		#{writeTime, jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+
+	<sql id="queryParam" >
+		<if test="dto.id != null">AND ID = #{dto.id}</if>
+		<if test="dto.channelType !=null and dto.channelType !=''">AND CHANNEL_TYPE	= #{dto.channelType}</if>
+		<if test="dto.aliascode !=null and dto.aliascode !=''">AND ALIASCODE = #{dto.aliascode}</if>
+		<if test="dto.loginName != null and dto.loginName !=''">AND LOGIN_NAME = #{dto.loginName}</if>
+		<if test="dto.cardNo !=null and dto.cardNo !=''">AND CARD_NO = #{dto.cardNo}</if>
+		<if test="dto.writeType !=null and dto.writeType !=''">AND WRITE_TYPE = #{dto.writeType}</if>
+		<if test="dto.status != null and dto.status !=''">AND STATUS = #{dto.status}</if>
+	</sql>
+	
+	<select id="query" resultMap="writeCardResultMap" parameterType="com.ncvas.payment.entity.AccountWriteCardDTO">
+		SELECT * FROM (
+		SELECT
+		T.*,
+		ROWNUM AS RN
+		FROM (SELECT * FROM NJCC_WRITE_CARD
+		WHERE 1=1
+		<include refid="queryParam"></include>
+		<choose>
+			<when test="dto.orders != null and dto.orders !='' ">
+				ORDER BY ${dto.orders}
+			</when>
+			<otherwise>
+				ORDER BY CREATED DESC
+			</otherwise>
+		</choose>
+		)T
+		WHERE
+		ROWNUM &lt;= #{endNum}
+		) WHERE RN &gt; #{beginNum}
+	</select>
+	<select id="count" resultType="int" parameterType="com.ncvas.payment.entity.AccountWriteCardDTO">
+		SELECT
+		COUNT(*)
+		FROM NJCC_WRITE_CARD
+		WHERE
+		1=1
+		<include refid="queryParam"></include>
+	</select>
+	<select id="get" resultMap="writeCardResultMap">
+		SELECT 
+			T.*
+		FROM NJCC_WRITE_CARD T
+		WHERE ID = #{id}
+	</select>
+
+	<select id="getByOrderId" resultMap="writeCardResultMap">
+		SELECT
+		T.*
+		FROM NJCC_WRITE_CARD T
+		WHERE ORDER_ID = #{orderId}
+	</select>
+
+	<select id="queryGroupByAliascode" resultType="String">
+		SELECT
+		table_alias.ALIASCODE AS ALIASCODE
+		FROM (SELECT tt.*, ROWNUM AS rowno
+		FROM (  SELECT t.ALIASCODE
+		FROM NJCC_WRITE_CARD t
+		where t.STATUS = '3'
+		group by t.ALIASCODE
+		) tt
+		WHERE rownum &lt;= #{endNum}
+		) table_alias
+		WHERE table_alias.rowno &gt; #{beginNum}
+	</select>
+
+	<select id="countGroupByAliascode" resultType="int">
+		SELECT
+		count(0)
+		FROM (SELECT tt.*, ROWNUM AS rowno
+		FROM (SELECT t.ALIASCODE
+		FROM NJCC_WRITE_CARD t
+		where t.STATUS = '3'
+		group by t.ALIASCODE
+		) tt
+		) table_alias
+	</select>
+</mapper>

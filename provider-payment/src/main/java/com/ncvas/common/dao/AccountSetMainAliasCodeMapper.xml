@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncvas.common.dao.AccountSetMainAliasCodeMapper">
+
+	<resultMap type="com.ncvas.payment.entity.AccountSetMainAliasCode" id="accountSetMainAliasCodeResultMap">
+		<id property="id" column="ID" />
+		<result property="aliasCode" column="ALIAS_CODE" />
+		<result property="memberCode" column="MEMBER_CODE" />
+		<result property="remark" column="REMARK" />
+		<result property="socialCode" column="SOCIAL_CODE" />
+		<result property="memberName" column="MEMBER_NAME" />
+	</resultMap>
+
+    <insert id="add" parameterType="com.ncvas.payment.entity.AccountSetMainAliasCode">
+    	<selectKey keyProperty="id" resultType="String" order="BEFORE">
+			SELECT SEQ_NJCC_ACCOUNT_MAINALIASCODE.NEXTVAL FROM DUAL
+		</selectKey>
+	      	INSERT INTO NJCC_ACCOUNT_MAIN_ALIAS_CODE
+	      		(ID,ALIAS_CODE,MEMBER_CODE,REMARK,CREATED,SOCIAL_CODE,MEMBER_NAME) VALUES
+	      		(
+	     		#{id, jdbcType=VARCHAR},
+				#{aliasCode, jdbcType=VARCHAR},
+				#{memberCode, jdbcType=VARCHAR},
+				#{remark, jdbcType=VARCHAR},
+				SYSDATE,
+				#{socialCode, jdbcType=VARCHAR},
+				#{memberName, jdbcType=VARCHAR}
+	      		)
+	</insert>
+	
+	<update id="update" parameterType="com.ncvas.payment.entity.AccountSetMainAliasCode">
+		UPDATE NJCC_ACCOUNT_MAIN_ALIAS_CODE
+		<set>
+			<if test="aliasCode !=null and aliasCode !=''">
+				ALIAS_CODE		=		#{aliasCode, jdbcType=VARCHAR},
+			</if>
+			<if test="memberCode !=null and memberCode !=''">
+				MEMBER_CODE		=		#{memberCode, jdbcType=VARCHAR},
+			</if>
+			<if test="remark !=null and remark !=''">
+				REMARK		=		#{remark, jdbcType=VARCHAR},
+			</if>
+			<if test="updatedate !=null ">
+				UPDATE_DATE		    =		#{updatedate, jdbcType=TIMESTAMP},
+			</if>
+			<if test="socialCode !=null and socialCode !=''">
+				SOCIAL_CODE		    =		#{socialCode, jdbcType=VARCHAR},
+			</if>
+			<if test="memberName !=null and memberName !=''">
+				MEMBER_NAME		    =		#{memberName, jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+	
+	<select id="get" resultMap="accountSetMainAliasCodeResultMap">
+			SELECT * FROM 
+          			NJCC_ACCOUNT_MAIN_ALIAS_CODE
+      					WHERE
+      					ID = #{id}
+	</select>
+	
+	<select id="query" resultMap="accountSetMainAliasCodeResultMap" parameterType="com.ncvas.payment.entity.AccountSetMainAliasCodeDTO">
+		SELECT
+		*
+		FROM (SELECT tt.*, ROWNUM AS rowno
+		FROM (SELECT t.*
+		FROM NJCC_ACCOUNT_MAIN_ALIAS_CODE t
+		WHERE 1=1
+		<if test="dto.aliasCode != null and dto.aliasCode != '' ">AND t.ALIAS_CODE = #{dto.aliasCode}</if>
+		<if test="dto.memberCode != null and dto.memberCode != '' ">AND t.MEMBER_CODE = #{dto.memberCode}</if>
+		<if test="dto.socialCode != null and dto.socialCode != '' ">AND t.SOCIAL_CODE = #{dto.socialCode}</if>
+		<if test="dto.memberName != null and dto.memberName != '' ">AND t.MEMBER_NAME = #{dto.memberName}</if>
+		<choose>
+			<when test="dto.orders != null">ORDER BY ${dto.orders}</when>
+			<otherwise>ORDER BY t.CREATED DESC</otherwise>
+		</choose>) tt
+		WHERE rownum &lt;= #{endNum}) table_alias
+		WHERE table_alias.rowno &gt; #{beginNum}
+	</select>
+	
+	<select id="count" resultType="int" parameterType="com.ncvas.payment.entity.AccountSetMainAliasCodeDTO">
+		SELECT 
+			COUNT(*)
+		FROM NJCC_ACCOUNT_MAIN_ALIAS_CODE
+		WHERE
+			1=1
+		<if test="dto.aliasCode != null and dto.aliasCode != '' ">AND t.ALIAS_CODE = #{dto.aliasCode}</if>
+		<if test="dto.memberCode != null and dto.memberCode != '' ">AND t.MEMBER_CODE = #{dto.memberCode}</if>
+		<if test="dto.socialCode != null and dto.socialCode != '' ">AND t.SOCIAL_CODE = #{dto.socialCode}</if>
+		<if test="dto.memberName != null and dto.memberName != '' ">AND t.MEMBER_NAME = #{dto.memberName}</if>
+	</select>
+
+	<select id="findByMemberCode" resultMap="accountSetMainAliasCodeResultMap">
+		SELECT
+		T.*
+		FROM NJCC_ACCOUNT_MAIN_ALIAS_CODE T
+		WHERE
+		1=1
+		<if test="dto.memberCode != null and dto.memberCode != ''"> AND MEMBER_CODE  = #{dto.memberCode}</if>
+	</select>
+</mapper>
