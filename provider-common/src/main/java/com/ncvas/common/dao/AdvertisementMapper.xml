@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncvas.common.dao.AdvertisementMapper">
+
+	<resultMap type="com.ncvas.common.entity.Advertisement" id="advertisementResultMap">
+		<id property="id" column="ID" />
+		<result property="title" column="TITLE" />
+		<result property="type" column="TYPE" />
+		<result property="pic" column="PIC" />
+		<result property="link" column="LINK" />
+		<result property="remark" column="REMARK" />
+		<result property="created" column="CREATED" />
+		<result property="starttime" column="STARTTIME" />
+		<result property="endtime" column="ENDTIME" />
+		<result property="ioslink" column="IOSLINK" />
+		<result property="second" column="AD_SECOND" />
+		<result property="reqBizType" column="REQ_BIZ_TYPE" />
+	</resultMap>
+
+    <insert id="add" parameterType="com.ncvas.common.entity.Advertisement">
+    	<selectKey keyProperty="id" resultType="String" order="BEFORE">
+			SELECT SEQ_NJCC_ADVERTISEMENT.NEXTVAL FROM DUAL
+		</selectKey>
+	      	INSERT INTO NJCC_ADVERTISEMENT
+				(ID,TITLE,TYPE,PIC,LINK,REMARK,CREATED,VALID,STARTTIME,ENDTIME,IOSLINK,AD_SECOND,REQ_BIZ_TYPE) VALUES
+				(
+				#{id, jdbcType=VARCHAR},
+				#{title, jdbcType=VARCHAR},
+				#{type, jdbcType=VARCHAR},
+				#{pic, jdbcType=VARCHAR},
+				#{link, jdbcType=VARCHAR},
+				#{remark, jdbcType=VARCHAR},
+				SYSDATE,
+				#{valid, jdbcType=VARCHAR},
+				#{starttime, jdbcType=VARCHAR},
+				#{endtime, jdbcType=VARCHAR},
+				#{ioslink, jdbcType=VARCHAR},
+				#{second, jdbcType=VARCHAR},
+				#{reqBizType, jdbcType=VARCHAR}
+				)
+	</insert>
+	
+	<update id="update" parameterType="com.ncvas.common.entity.Advertisement">
+		UPDATE NJCC_ADVERTISEMENT
+		<set>
+			<if test="title !=null and title !=''">
+				TITLE		=		#{title, jdbcType=VARCHAR},
+			</if>
+			<if test="type !=null and type !=''">
+				TYPE		=		#{type, jdbcType=VARCHAR},
+			</if>
+			<if test="pic !=null and pic !=''">
+				PIC		=		#{pic, jdbcType=VARCHAR},
+			</if>
+			<if test="link !=null">
+				LINK		=		#{link, jdbcType=VARCHAR},
+			</if>
+			<if test="remark !=null">
+				REMARK		=		#{remark, jdbcType=VARCHAR},
+			</if>
+			<if test="valid != null and valid !=''">
+				VALID		=		#{valid, jdbcType=VARCHAR},
+			</if>
+			<if test="starttime != null and starttime !=''">
+				STARTTIME		=		#{starttime, jdbcType=VARCHAR},
+			</if>
+			<if test="endtime != null and endtime !=''">
+				ENDTIME		=		#{endtime, jdbcType=VARCHAR},
+			</if>
+			<if test="ioslink != null ">
+				IOSLINK		=		#{ioslink, jdbcType=VARCHAR},
+			</if>
+			<if test="second != null ">
+				AD_SECOND		=		#{second, jdbcType=VARCHAR},
+			</if>
+			<if test="reqBizType !=null and reqBizType !=''">
+				REQ_BIZ_TYPE		=		#{reqBizType, jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+	
+	<select id="get" resultMap="advertisementResultMap">
+			SELECT T.Id,
+				T.Title,
+				T.TYPE,
+				T.PIC,
+				T.LINK,
+				T.REMARK,
+				T.CREATED,
+				T.VALID,
+				T.IOSLINK,
+				T.STARTTIME,
+				T.ENDTIME,
+				T.AD_SECOND,
+				(
+				CASE
+				WHEN T.REQ_BIZ_TYPE is null OR T.REQ_BIZ_TYPE = '1' THEN '1'
+				ELSE '2'
+				END
+				)REQ_BIZ_TYPE FROM
+          			NJCC_ADVERTISEMENT T
+      					WHERE
+      					ID = #{id}
+	</select>
+	
+	<select id="query" resultMap="advertisementResultMap" parameterType="com.ncvas.common.entity.AdvertisementDTO">
+		SELECT * FROM (
+		SELECT
+			T.Id,
+			T.Title,
+			T.TYPE,
+			T.PIC,
+			T.LINK,
+			T.REMARK,
+			T.CREATED,
+			T.VALID,
+			T.IOSLINK,
+			T.STARTTIME,
+			T.ENDTIME,
+			T.AD_SECOND,
+			(
+			CASE
+			WHEN T.REQ_BIZ_TYPE is null OR T.REQ_BIZ_TYPE = '1' THEN '1'
+			ELSE '2'
+			END
+			)REQ_BIZ_TYPE,
+		ROWNUM AS RN
+		FROM (SELECT * FROM NJCC_ADVERTISEMENT
+		<choose>
+			<when test="dto.orders != null and dto.orders !='' ">
+				ORDER BY ${dto.orders}
+			</when>
+			<otherwise>
+				ORDER BY CREATED DESC
+			</otherwise>
+		</choose>
+		)T
+		WHERE
+		ROWNUM &lt;= #{endNum}
+		<if test="dto.id != null">AND ID = #{dto.id}</if>
+		<if test="dto.title != null and dto.title !=''"> AND TITLE like '%'|| #{dto.title}||'%' </if>
+		<if test="dto.type != null and dto.type !=''"> AND TYPE  = #{dto.type}</if>
+		<if test="dto.creationtime != null and  dto.creationtime !=''"> AND CREATED between
+			to_date(#{dto.creationtime},'yyyy-MM-dd HH24:mi:ss') and  to_date(#{dto.creationendtime},'yyyy-MM-dd HH24:mi:ss')</if>
+		<if test="dto.valid != null and dto.valid !=''"> AND VALID  = #{dto.valid}</if>
+		<if test="dto.differType != null and dto.differType !=''"> AND SYSDATE between to_date(t.starttime,'yyyy-MM-dd HH24:mi:ss') and
+			to_date(t.endtime,'yyyy-MM-dd HH24:mi:ss')</if>
+		<if test="dto.isAdv != null and dto.isAdv !=''"> AND  TYPE  &lt;&gt; #{dto.isAdv}</if>
+		<if test="dto.reqBizTypeVo != null and dto.reqBizTypeVo !=''">
+			<choose>
+				<when test='dto.reqBizTypeVo =="1" '>
+					AND (REQ_BIZ_TYPE is null OR REQ_BIZ_TYPE = #{dto.reqBizTypeVo})
+				</when>
+				<when test='dto.reqBizTypeVo == "2"'>
+					AND REQ_BIZ_TYPE  = #{dto.reqBizTypeVo}
+				</when>
+			</choose>
+		</if>
+		<choose>
+			<when test='dto.reqBizType =="1" '>
+				AND (REQ_BIZ_TYPE is null OR REQ_BIZ_TYPE = #{dto.reqBizType})
+			</when>
+			<when test='dto.reqBizType == "2"'>
+				AND REQ_BIZ_TYPE = #{dto.reqBizType}
+			</when>
+		</choose>
+		) WHERE RN &gt; #{beginNum}
+	</select>
+	
+	<select id="count" resultType="int" parameterType="com.ncvas.common.entity.AdvertisementDTO">
+		SELECT
+		COUNT(*)
+		FROM NJCC_ADVERTISEMENT
+		WHERE
+		1=1
+		<if test="dto.id != null">AND ID = #{dto.id}</if>
+		<if test="dto.title != null and dto.title !=''"> AND TITLE like '%'|| #{dto.title}||'%' </if>
+		<if test="dto.type != null and dto.type !=''"> AND TYPE  = #{dto.type}</if>
+		<if test="dto.creationtime != null and  dto.creationtime !=''"> AND CREATED between
+			to_date(#{dto.creationtime},'yyyy-MM-dd HH24:mi:ss') and  to_date(#{dto.creationendtime},'yyyy-MM-dd HH24:mi:ss')</if>
+		<if test="dto.valid != null and dto.valid !=''"> AND VALID  = #{dto.valid}</if>
+		<if test="dto.differType != null and dto.differType !=''"> AND SYSDATE between to_date(starttime,'yyyy-MM-dd HH24:mi:ss') and
+			to_date(endtime,'yyyy-MM-dd HH24:mi:ss')</if>
+		<if test="dto.isAdv != null and dto.isAdv !=''"> AND  TYPE  &lt;&gt; #{dto.isAdv}</if>
+		<if test="dto.reqBizTypeVo != null and dto.reqBizTypeVo !=''">
+			<choose>
+				<when test='dto.reqBizTypeVo =="1" '>
+					AND (REQ_BIZ_TYPE is null OR REQ_BIZ_TYPE = #{dto.reqBizTypeVo})
+				</when>
+				<when test='dto.reqBizTypeVo == "2"'>
+					AND REQ_BIZ_TYPE  = #{dto.reqBizTypeVo}
+				</when>
+			</choose>
+		</if>
+		<choose>
+			<when test='dto.reqBizType =="1" '>
+				AND (REQ_BIZ_TYPE is null OR REQ_BIZ_TYPE = #{dto.reqBizType})
+			</when>
+			<when test='dto.reqBizType == "2"'>
+				AND REQ_BIZ_TYPE = #{dto.reqBizType}
+			</when>
+		</choose>
+	</select>
+</mapper>

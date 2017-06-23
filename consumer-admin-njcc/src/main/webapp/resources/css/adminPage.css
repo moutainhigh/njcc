@@ -1,0 +1,49 @@
+html,body{height: 100%;}
+label{font-weight: normal;font-size: 13px;}
+.table,.panel{margin-bottom: 0px;}
+.panel100{height: 100%;}
+.panelHeight{margin-bottom: 0px;min-height: 600px;height: 100%;}
+.panel-heading h5{margin:0;font-size: 16px;}
+.rechargeMain{width: 900px;overflow: hidden;margin: 60px auto;}
+.rechargeSelect{float: left;width: 250px;height: 160px;margin-right:50px;text-align:center;border-radius: 4px;border: 1px solid #CEDDE1;background-color: #FFFFFF;border-top:4px solid #00BBE7;}
+.rechargeSelect h4{font-size: 22px;margin-top: 20px;}
+.btnBlue{background-color: #399CEA;border-radius: 20px;color: #FFFFFF;margin-top: 10px;width: 105px;}
+.btnGreen{background-color: #00BE95;border-radius: 20px;color: #FFFFFF;margin-top: 10px;width: 105px;}
+.formStyle{margin-bottom: 0;}
+.formStyle select,.formStyle input{border-radius: 4px;height:30px;border: 1px solid #CEDDDF;}
+.form-group button{width: 80px;}
+.main_bj{background-color: #F6F7FA}
+.margin_rg15{margin-right: 15px;}
+.pagination{margin-bottom: 0;}
+.fileStyle{padding: 3px 6px;font-size: 14px;width:242px;border: 1px solid #ccc;border-radius:4px;}
+#preview{width:430px;height:200px;border:1px solid #ccc;overflow:hidden;padding: 2px;border-radius:4px;background: url(../img/image.png)no-repeat center center;}
+#imghead {filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=image);}
+.logImg{max-width: 350px;max-height: 80px;overflow: hidden;}
+.button15 button{margin-right: 10px;}
+.pageList{margin-top: 25px;text-align: center;}
+.body_float{position:absolute;top:8px;right:40px;width:248px;height:490px;overflow: hidden;background-image:url(../img/phone.png);background-repeat: no-repeat;}
+.body_float_img{margin: 102px auto 0;height: 100px;width:220px;background-color: #1392E9;overflow:hidden;}
+#imgPic{width:220px;height: 110px;}
+.sty404{text-align: center;}
+#inputAdd,#inputEdit,#inputDel,#inputRefresh,#inputSearch{margin: 2px 8px;}
+.positionfloat{position: relative;}
+.selectFloat{width:88%; display: none;position: absolute;left: 15px;top: 33px;z-index: 9999;}
+.treeview{max-height: 200px;overflow-y: auto;overflow-x: auto;border: 1px solid #ddd;border-radius: 4px;}
+.treeview .list-group-item {border-bottom: 1px solid #ddd;padding: 8px 14px;font-size: 13px;border-left: 0;}
+.treeview .list-group {margin-bottom: 0;}
+
+/*login页面样式*/
+.loginBody{background-image: url(../img/login_bj2.png);background-color: #F2F2F2;background-position: center center;background-repeat:no-repeat;backguound-attachment:scroll;}
+.loginBroder{width: 480px;margin: 8% auto 0 auto;text-align: center;overflow: hidden;box-shadow: 2px 12px 12px #888888;}
+.loginCenter {padding-left:35px;padding-right:35px;width: 100%;background-color: #FFFFFF;}
+.blackC{color: brown;display: block;text-align: left;}
+.well{margin-bottom: 0px;}
+
+.impower-group{overflow: hidden;}
+.impower-group-lf{height: 425px;width:52%;float:left;border: 1px solid #DDDDDD;background-color: #ffffff;}
+.impower-group-rg{height: 425px;width:46%;float: right;}
+.impower-text{overflow: hidden;margin-bottom: 30px;}
+.impower-center{text-align: center;}
+.impower-center button{width: 100px;}
+.impower-button{margin-top: 100px;text-align: center;}
+.impower-button button{width: 260px;height:40px;margin-bottom: 8px;}
