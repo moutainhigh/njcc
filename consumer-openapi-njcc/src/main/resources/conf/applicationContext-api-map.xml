@@ -1,0 +1,84 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<bean id="apiHandlerClassMaps" class="java.util.HashMap">
+		<constructor-arg>
+			<map>
+				<entry key="40001" value="com.ncvas.handler.fin.ContentHandler"></entry>
+				<entry key="40002" value="com.ncvas.handler.fin.RecommentHandler"></entry>
+				<entry key="40003" value="com.ncvas.handler.fin.QuickLoginHandler"></entry>
+				<entry key="40004" value="com.ncvas.handler.fin.JqySingleUserTradeHandler"></entry>
+				<entry key="40005" value="com.ncvas.handler.fin.AesEncryptHandler"></entry>
+				<entry key="40006" value="com.ncvas.handler.fin.QuickLoginAndAesEncryptHandler"></entry>
+				<entry key="40007" value="com.ncvas.handler.fin.JqyLiCaiHandler"></entry>
+				<entry key="40008" value="com.ncvas.handler.fin.QuickLoginAndAesEncryptHandler2"></entry>
+
+				<entry key="50027" value="com.ncvas.handler.common.CheckSmsCodeHandler"></entry>
+				<entry key="50028" value="com.ncvas.handler.common.AdvertisementHandler"></entry>
+				<entry key="50034" value="com.ncvas.handler.common.StoreHandler"></entry>
+				<entry key="50035" value="com.ncvas.handler.common.QueryPayInfoHandler"></entry>
+				<entry key="50050" value="com.ncvas.handler.njcc.PayOrderCardToAccountHandler"></entry>
+				<entry key="50051" value="com.ncvas.handler.njcc.PayOrderCardToAccountResHandler"></entry>
+				<entry key="50054" value="com.ncvas.handler.njcc.VerifyVersionsHandler"></entry>
+				<entry key="50055" value="com.ncvas.handler.wrist.WristSleepingHandler"></entry>
+				<entry key="50056" value="com.ncvas.handler.wrist.WristSportHandler"></entry>
+				<entry key="50057" value="com.ncvas.handler.wrist.WristCardBindingHandler"></entry>
+				<entry key="50058" value="com.ncvas.handler.wrist.WristCardUnBindingHandler"></entry>
+				<entry key="50059" value="com.ncvas.handler.wrist.WristCardBindingDefaultHandler"></entry>
+				<entry key="50060" value="com.ncvas.handler.wrist.QueryWristCardBindingHandler"></entry>
+				<entry key="50061" value="com.ncvas.handler.common.ChannelHandler"></entry>
+				<entry key="10656" value="com.ncvas.handler.common.StoreQueryAroundHandler"></entry>
+
+				<entry key="10601" value="com.ncvas.handler.njcc.NjccRegisterHandler"></entry>
+				<entry key="10602" value="com.ncvas.handler.njcc.NjccLoginHandler"></entry>
+				<entry key="10605" value="com.ncvas.handler.njcc.NjccModifyPasswordHandler"></entry>
+				<entry key="10610" value="com.ncvas.handler.njcc.NjccBindBankCardHandler"></entry>
+				<entry key="10612" value="com.ncvas.handler.njcc.NjccQuickPayMentBankListHandler"></entry>
+				<entry key="10613" value="com.ncvas.handler.njcc.NjccUnBinDingQuickPayMentBankCardHandler"></entry>
+				<entry key="10614" value="com.ncvas.handler.njcc.NjccGetCheckCodeHandler"></entry>
+				<entry key="10615" value="com.ncvas.handler.njcc.NjccMemberInfoHandler"></entry>
+				<entry key="10616" value="com.ncvas.handler.njcc.NjccCheckCertificationHandler"></entry>
+				<entry key="10618" value="com.ncvas.handler.njcc.NjccResetPwdHandler"></entry>
+				<entry key="10620" value="com.ncvas.handler.njcc.NjccWithdrawHandler"></entry>
+				<!--<entry key="10620" value="com.ncvas.handler.njcc.NjccWithdrawHandler2"></entry>-->
+				<entry key="10633" value="com.ncvas.handler.njcc.NjccBindNjccCardHandler"></entry>
+				<entry key="10634" value="com.ncvas.handler.njcc.NjccUnBindNjccCardHandler"></entry>
+				<entry key="10635" value="com.ncvas.handler.njcc.NjccQueryAliasCodeHandler"></entry>
+				<entry key="10636" value="com.ncvas.handler.njcc.QueryNjccCardListHandler"></entry>
+				<entry key="10637" value="com.ncvas.handler.njcc.NjccSetMainAliasCodeHandler"></entry>
+				<entry key="10638" value="com.ncvas.handler.njcc.AccountCheckPayPwdHandler"></entry>
+				<entry key="10639" value="com.ncvas.handler.njcc.NjccQueryMainAliasCodeHandler"></entry>
+				<entry key="10640" value="com.ncvas.handler.njcc.NjccVerdictPayPasswordHandler"></entry>
+				<entry key="10641" value="com.ncvas.handler.njcc.NjccRegisterNjccVirtualHandler"></entry>
+				<entry key="10643" value="com.ncvas.handler.njcc.NjccUsertransferHandler"></entry>
+				<entry key="10644" value="com.ncvas.handler.njcc.AccountQuickPayOrderHandler"></entry>
+				<entry key="10645" value="com.ncvas.handler.njcc.AccountTransactionHandler"></entry>
+				<entry key="10646" value="com.ncvas.handler.njcc.QueryBusSubwayTransRdHandler"></entry>
+				<entry key="10647" value="com.ncvas.handler.njcc.PrepaidOrderInquiryHandler"></entry>
+				<entry key="10648" value="com.ncvas.handler.njcc.ChargeAccQuickPayOrderHandler"></entry>
+				<entry key="10649" value="com.ncvas.handler.njcc.AccountQuickPayCancelHandler"></entry>
+				<entry key="10650" value="com.ncvas.handler.njcc.NjccModifyMemberInfoHandler"></entry>
+				<entry key="10651" value="com.ncvas.handler.njcc.NjccCardHissVerifyHandler"></entry>
+				<entry key="10652" value="com.ncvas.handler.njcc.NjccQueryTransRdHandler"></entry>
+				<entry key="10653" value="com.ncvas.handler.njcc.NjccQueryHissAccountInfoHandler"></entry>
+				<entry key="10654" value="com.ncvas.handler.njcc.NjccCardHissOpenHandler"></entry>
+
+				<entry key="11033" value="com.ncvas.handler.njcc.NjccPayInfoCreateHandler"></entry>
+				<entry key="11610" value="com.ncvas.handler.njcc.NjccBindBankCardPureHandler"></entry>
+				<entry key="11633" value="com.ncvas.handler.njcc.NjccBindAndVerifyNjccCardHandler"></entry>
+				<entry key="12000" value="com.ncvas.handler.njcc.NjccDepositHandler"></entry>
+				<entry key="12002" value="com.ncvas.handler.njcc.AccountWriteCardHandler"></entry>
+				<entry key="12610" value="com.ncvas.handler.njcc.NjccBindBankCardCheckHandler"></entry>
+
+			</map>
+		</constructor-arg>
+	</bean>
+
+</beans>

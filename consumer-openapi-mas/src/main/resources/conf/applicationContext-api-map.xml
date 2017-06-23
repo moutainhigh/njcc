@@ -1,0 +1,33 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<bean id="apiHandlerClassMaps" class="java.util.HashMap">
+		<constructor-arg>
+			<map>
+				<entry key="50028" value="com.ncvas.handler.common.AdvertisementHandler"></entry>
+				<entry key="50061" value="com.ncvas.handler.common.ChannelHandler"></entry>
+				<entry key="10601" value="com.ncvas.handler.mas.MasRegisterHandler"></entry>
+				<entry key="10602" value="com.ncvas.handler.mas.MasLoginHandler"></entry>
+				<entry key="10605" value="com.ncvas.handler.mas.MasModifyPasswordHandler"></entry>
+				<entry key="10618" value="com.ncvas.handler.mas.MasResetPwdHandler"></entry>
+				<entry key="10614" value="com.ncvas.handler.mas.MasGetCheckCodeHandler"></entry>
+				<entry key="10615" value="com.ncvas.handler.mas.MasMemberInfoHandler"></entry>
+				<entry key="10616" value="com.ncvas.handler.mas.MasCheckCertificationHandler"></entry>
+				<entry key="10650" value="com.ncvas.handler.mas.MasModifyMemberInfoHandler"></entry>
+				<!--市民卡申领相关接口-->
+				<entry key="10670" value="com.ncvas.handler.mas.MasApplyForCardHandler"></entry>
+				<entry key="10671" value="com.ncvas.handler.mas.MasQueryForApplyStatusHandler"></entry>
+				<entry key="10672" value="com.ncvas.handler.mas.MasQueryForApplyCertificationHandler"></entry>
+				<entry key="10673" value="com.ncvas.handler.mas.MasQueryForWebsiteHandler"></entry>
+			</map>
+		</constructor-arg>
+	</bean>
+
+</beans>

@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- 1 - 秒(0–59) ­2 - 分(0–59) 3 - 时(0–23) ­4 - 日(1–31) ­5 - 月(1–12) ­6 - 
+		星期(SUN–SAT or 1–7) ­7 - 年(可选, 1970–2099) * 表示所有值. 例如:在分的字段上设置 "*",表示每一分钟都会触发。 
+		?表示不指定值。使用的场景为不需要关心当前设置这个字段的值。例如:要在每月的10号触发一个操作，但不关心是周几，所以需要周位置的那个字段设置 为"?" 
+		具体设置为 0 0 0 10 * ? - 表示区间。例如 在小时上设置 "10-12",表示 10,11,12点都会触发。 , 表示指定多个值，例如在周字段上设置 
+		"MON,WED,FRI" 表示周一，周三和周五触发 / 用于递增触发。如在秒上面设置"5/15" 表示从5秒开始，每增15秒触发(5,20,35,50)。 
+		在月字段上设置'1/3'所示每月1号开始，每隔三天触发一次。 -->
+	
+	<description>定时处理任务</description>
+ 	
+ 	<!--<bean id="memberTokenTimeoutJob" class="com.weconex.njcc.job.njcc.MemberTokenTimeoutJob" />
+ 	<bean id="memberTokenTimeoutJobTrigger" 
+ 		class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean"> 
+ 		<property name="jobDetail">
+ 			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="memberTokenTimeoutJob" />
+				<property name="targetMethod" value="execute" />
+			</bean> 
+ 		</property>
+ 		<property name="startDelay" value="60000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+ 		<property name="repeatInterval" value="3600000" /> &lt;!&ndash; 每小时执行一次 &ndash;&gt;
+ 		 &lt;!&ndash;<property name="repeatInterval" value="60000"/>  &lt;!&ndash;每隔1分钟触发一次 &ndash;&gt;&ndash;&gt;
+ 	</bean>
+ 	
+ 	
+	<bean id="refurbishJqyProductJob" class="com.weconex.njcc.job.fin.RefurbishJqyProductJob" />
+ 	<bean id="refurbishJqyProductJobTrigger" 
+ 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"> 
+ 		<property name="jobDetail">
+ 			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="refurbishJqyProductJob" />
+				<property name="targetMethod" value="execute" />
+			</bean> 
+ 		</property>
+ 		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+ 		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" />&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0/5 * * ? * *" />&ndash;&gt;
+ 		 <property name="cronExpression" value="0 30 1 ? * *" />  &lt;!&ndash; 每天凌晨1点30分执行一次 &ndash;&gt;
+ 	</bean>
+	<bean id="refurbishJqyTradeLiCaiJob" class="com.weconex.njcc.job.fin.RefurbishJqyTradeLiCaiJob" />
+	<bean id="refurbishJqyTradeLiCaiJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="refurbishJqyTradeLiCaiJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="1" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" />&ndash;&gt;
+		&lt;!&ndash;每天凌晨1点30分执行一次&ndash;&gt;
+		<property name="cronExpression" value="0 0 2 ? * *" />
+	</bean>
+	<bean id="expireValidateCodeDelJob" class="com.weconex.njcc.job.njcc.ExpireValidateCodeDel" />
+	<bean id="expireValidateCodeDelJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="expireValidateCodeDelJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="1" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" />&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0/5 * * ? * *" />&ndash;&gt;
+		<property name="cronExpression" value="0 30 2 ? * *" />  &lt;!&ndash; 每天凌晨1点30分执行一次 &ndash;&gt;
+	</bean>
+	
+	<bean id="updatePaySystemMemoJob" class="com.weconex.njcc.job.njcc.UpdatePaySystemMemo" />
+	<bean id="updatePaySystemMemoJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updatePaySystemMemoJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="1" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		&lt;!&ndash; <property name="cronExpression" value="0 0/1 * ? * *" /> &ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0/5 * * ? * *" />&ndash;&gt;
+		<property name="cronExpression" value="0 0 3 ? * *" />  &lt;!&ndash; 每天凌晨1点30分执行一次 &ndash;&gt;
+	</bean>-->
+
+	<!--处理旧的预约订单-->
+	<!--<bean id="updateQuickPayOrderJob" class="com.weconex.njcc.job.njcc.UpdateQuickPayOrderJob" />
+	<bean id="updateQuickPayOrderJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updateQuickPayOrderJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="1" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		&lt;!&ndash; <property name="cronExpression" value="0 0/1 * ? * *" /> &ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0/60 * * ? * *" />&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 13 11 ? * *" />&ndash;&gt;
+		<property name="cronExpression" value="0 30 3 ? * *" />  &lt;!&ndash; 每天凌晨1点30分执行一次 &ndash;&gt;
+	</bean>-->
+
+	<!--<bean id="updateBlackListToRedisJob" class="com.weconex.njcc.job.njcc.UpdateBlackListToRedis" />
+	<bean id="updateBlackListToRedisJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updateBlackListToRedisJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0/2 * ? * *" /> &lt;!&ndash;2分钟执行一次&ndash;&gt;
+	</bean>
+
+	<bean id="updateLoginStatsJob" class="com.weconex.njcc.job.reports.UpdateLoginStats" />
+	<bean id="updateLoginStatsJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updateLoginStatsJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" />&ndash;&gt; &lt;!&ndash;2分钟执行一次&ndash;&gt;
+	</bean>
+
+	<bean id="updateRegisterStatsJob" class="com.weconex.njcc.job.reports.UpdateRegisterStats" />
+	<bean id="updateRegisterStatsJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updateRegisterStatsJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" /> &ndash;&gt;&lt;!&ndash;2分钟执行一次&ndash;&gt;
+	</bean>
+
+	<bean id="updateThirdInterfaceStatsJob" class="com.weconex.njcc.job.reports.UpdateThirdSystemInterfaceStats" />
+	<bean id="updateThirdInterfaceStatsTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updateThirdInterfaceStatsJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" />&ndash;&gt; &lt;!&ndash;2分钟执行一次&ndash;&gt;
+	</bean>
+
+	<bean id="UpdateLiveQuantityStatsJob" class="com.weconex.njcc.job.reports.UpdateLiveQuantityStats" />
+	<bean id="UpdateLiveQuantityStatsTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="UpdateLiveQuantityStatsJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/2 * ? * *" /> &lt;!&ndash;2分钟执行一次&ndash;&gt;&ndash;&gt;
+	</bean>
+	<bean id="delRedisKeyJob" class="com.weconex.njcc.job.njcc.RedisKeyDel" />
+	<bean id="delRedisKeyJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="delRedisKeyJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" /> &lt;!&ndash;1分钟执行一次&ndash;&gt;&ndash;&gt;
+	</bean>-->
+
+	<!--旧钱包转账户统计表-->
+	<!--<bean id="UpdateCardToAccountStatsJob" class="com.weconex.njcc.job.reports.UpdateCardToAccountStats" />
+	<bean id="UpdateCardToAccountStatsTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="UpdateCardToAccountStatsJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" /> &lt;!&ndash;1分钟执行一次&ndash;&gt;&ndash;&gt;
+	</bean>-->
+
+	<!--旧充值统计定时器-->
+	<!--<bean id="updateRechargeStatsJob" class="com.weconex.njcc.job.reports.UpdateRechargeStats" />
+	<bean id="updateRechargeStatsTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updateRechargeStatsJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" />&ndash;&gt; &lt;!&ndash;2分钟执行一次&ndash;&gt;
+	</bean>-->
+
+	<!--旧提现统计定时器-->
+	<!--<bean id="UpdateWithdrawalStatsJob" class="com.weconex.njcc.job.reports.UpdateWithdrawalStats" />
+	<bean id="UpdateWithdrawalStatsTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="UpdateWithdrawalStatsJob" />
+				<property name="targetMethod" value="execute"/>
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" />&ndash;&gt; &lt;!&ndash;2分钟执行一次&ndash;&gt;
+	</bean>-->
+	<bean id="BindBankRefundJob" class="com.ncvas.job.njcc.BindBankRefund" />
+	<bean id="bindBankRefundTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="BindBankRefundJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> <!-- 启动1分钟后开始执行 -->
+		<property name="cronExpression" value="0 0/5 * ? * *" /> <!--5分钟执行一次-->
+		<!--<property name="cronExpression" value="0 0/1 * ? * *" /> &lt;!&ndash;5分钟执行一次&ndash;&gt;-->
+	</bean>
+
+	<!--<bean id="updateAccountLoginJob" class="com.weconex.njcc.job.reports.UpdateAccountLoginStats" />
+	<bean id="updateAccountLoginJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updateAccountLoginJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" /> &lt;!&ndash;1分钟执行一次&ndash;&gt;&ndash;&gt;
+	</bean>
+
+	<bean id="updateAccountRegisterStatsJob" class="com.weconex.njcc.job.reports.UpdateAccountRegisterStats" />
+	<bean id="updateAccountRegisterStatsJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updateAccountRegisterStatsJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" /> &lt;!&ndash;1分钟执行一次&ndash;&gt;&ndash;&gt;
+	</bean>
+
+	<bean id="refundRedPacketJob" class="com.weconex.njcc.job.njcc.RefundRedPacket" />
+	<bean id="refundRedPacketJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="refundRedPacketJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0/5 * ? * *" />  &lt;!&ndash;5分钟执行一次&ndash;&gt;
+	</bean>
+
+	<bean id="updateRedPacketShare" class="com.weconex.njcc.job.njcc.UpdateRedPacketShare" />
+	<bean id="updateRedPacketShareJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updateRedPacketShare" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/5 * ? * *" />  &lt;!&ndash;5分钟执行一次&ndash;&gt;&ndash;&gt;
+		<property name="cronExpression" value="0 0 1 ? * *" /> &lt;!&ndash;每天凌晨1点执行一次&ndash;&gt;
+	</bean>
+
+	<bean id="updateEventAndAwardSysnJob" class="com.weconex.njcc.job.njcc.UpdateEventAndAwardSysn" />
+	<bean id="updateEventAndAwardSysnJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updateEventAndAwardSysnJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0/5 * ? * *" />  &lt;!&ndash;5分钟执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" />  &lt;!&ndash;5分钟执行一次&ndash;&gt;&ndash;&gt;
+	</bean>
+
+	<bean id="visitReportStats" class="com.weconex.njcc.job.reports.VisitReportStats" />
+	<bean id="visitReportStatsTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="visitReportStats" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" />&lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" /> &lt;!&ndash;1分钟执行一次&ndash;&gt;&ndash;&gt;
+	</bean>
+
+	&lt;!&ndash;新的修改预约充值订单的状态&ndash;&gt;
+	<bean id="updateAccountQuickPayOrderJob" class="com.weconex.njcc.job.njcc3.UpdateAccountQuickPayOrderJob" />
+	<bean id="updateAccountQuickPayOrderTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updateAccountQuickPayOrderJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" />&lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" /> &ndash;&gt;&lt;!&ndash;1分钟执行一次&ndash;&gt;
+	</bean>
+
+	&lt;!&ndash;钱包转账户统计数据源&ndash;&gt;
+	<bean id="updatePayOrderCardToAccountStatsJob" class="com.weconex.njcc.job.reports.UpdatePayOrderCardToAccountStats" />
+	<bean id="updatePayOrderCardToAccountStatsTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updatePayOrderCardToAccountStatsJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" /> &ndash;&gt;&lt;!&ndash;1分钟执行一次&ndash;&gt;
+	</bean>
+
+	&lt;!&ndash;提现定时器&ndash;&gt;
+	<bean id="UpdatePayOrderWithdrawStatsJob" class="com.weconex.njcc.job.reports.UpdatePayOrderWithdrawStats" />
+	<bean id="UpdatePayOrderWithdrawStatsTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="UpdatePayOrderWithdrawStatsJob" />
+				<property name="targetMethod" value="execute"/>
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" /> &lt;!&ndash;2分钟执行一次&ndash;&gt;&ndash;&gt;
+	</bean>
+
+	&lt;!&ndash;充值定时器&ndash;&gt;
+	<bean id="UpdatePayOrderDepositStatsJob" class="com.weconex.njcc.job.reports.UpdatePayOrderDepositStats" />
+	<bean id="UpdatePayOrderDepositStatsTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="UpdatePayOrderDepositStatsJob" />
+				<property name="targetMethod" value="execute"/>
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" /> &lt;!&ndash;2分钟执行一次&ndash;&gt;&ndash;&gt;
+	</bean>
+
+	&lt;!&ndash;统计不同请求来源调用第三方接口数据源&ndash;&gt;
+	<bean id="updateReqProjThirdInterfaceStatsJob" class="com.weconex.njcc.job.reports.UpdateReqProjThirdInterfaceStats" />
+	<bean id="updateReqProjThirdInterfaceStatsTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updateReqProjThirdInterfaceStatsJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" />&ndash;&gt; &lt;!&ndash;1分钟执行一次&ndash;&gt;
+	</bean>
+
+	&lt;!&ndash;提现结果查询更新数据库&ndash;&gt;
+	<bean id="updateWithdrawResJob" class="com.weconex.njcc.job.njcc3.UpdateWithdrawResJob" />
+	<bean id="updateWithdrawResJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="updateWithdrawResJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0 0 ? * *" />&ndash;&gt; &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+		<property name="cronExpression" value="0 0/5 * ? * *" /> &lt;!&ndash;5分钟执行一次&ndash;&gt;
+	</bean>
+
+	<bean id="PayOrderCloseJob" class="com.weconex.njcc.job.njcc3.PayOrderClose" />
+	<bean id="PayOrderCloseJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="PayOrderCloseJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" /> &lt;!&ndash;1分钟执行一次&ndash;&gt;&ndash;&gt;
+		<property name="cronExpression" value="0 0/5 * ? * *" />  &lt;!&ndash;5分钟执行一次&ndash;&gt;
+	</bean>
+
+
+	<bean id="reportAccountSexAndAgeProportionJob" class="com.weconex.njcc.job.reports.ReportAccountSexAndAgeProportion" />
+	<bean id="reportAccountSexAndAgeProportionJobTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="reportAccountSexAndAgeProportionJob" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="startDelay" value="10000" /> &lt;!&ndash; 启动1分钟后开始执行 &ndash;&gt;
+		&lt;!&ndash;<property name="cronExpression" value="0 0/1 * ? * *" /> &lt;!&ndash;1分钟执行一次&ndash;&gt;&ndash;&gt;
+		<property name="cronExpression" value="0 0 0 ? * *" /> &lt;!&ndash;每天凌晨12点执行一次&ndash;&gt;
+	</bean>-->
+
+	<bean id="factoryBean"
+ 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean" 
+ 		lazy-init="false"> 
+ 		<property name="schedulerName" value="noUseDatabaseScheduler" /> 
+ 		<property name="taskExecutor" ref="taskExecutor" />
+ 		<property name="triggers"> 
+ 			<list>
+				<!--<ref local="refurbishJqyProductJobTrigger" />		&lt;!&ndash;伽乾益刷新产品列表&ndash;&gt;
+				<ref local="refurbishJqyTradeLiCaiJobTrigger" />	&lt;!&ndash;伽乾益刷新理财产品列表&ndash;&gt;
+				<ref local="expireValidateCodeDelJobTrigger" />	&lt;!&ndash;处理过期验证码&ndash;&gt;
+				<ref local="updatePaySystemMemoJobTrigger" />		&lt;!&ndash;处理过期订单&ndash;&gt;
+				&lt;!&ndash;<ref local="updateQuickPayOrderJobTrigger" />&ndash;&gt;		&lt;!&ndash;处理预约订单&ndash;&gt;
+				&lt;!&ndash;<ref local="updateLoginStatsJobTrigger" /> 		&lt;!&ndash; 登陆统计表(旧) &ndash;&gt;&ndash;&gt;
+				&lt;!&ndash;<ref local="updateRegisterStatsJobTrigger" />		&lt;!&ndash; 注册统计表(旧) &ndash;&gt;&ndash;&gt;
+				<ref local="updateThirdInterfaceStatsTrigger" />	&lt;!&ndash;统计调用第三方接口表&ndash;&gt;
+				<ref local="UpdateLiveQuantityStatsTrigger" />	&lt;!&ndash;日活量统计表&ndash;&gt;
+				<ref local="delRedisKeyJobTrigger" />				&lt;!&ndash;开始清理日活量redis&ndash;&gt;-->
+				<!--<ref local="UpdateCardToAccountStatsTrigger" />-->	<!--钱包转账户统计表-->
+				<!--<ref local="updateRechargeStatsTrigger" />		&lt;!&ndash;充值统计表（旧）&ndash;&gt;-->
+				<!--<ref local="UpdateWithdrawalStatsTrigger" />		&lt;!&ndash;提现统计表（旧）&ndash;&gt;-->
+				<ref local="bindBankRefundTrigger" />				<!--绑定银行卡支付一分钱的退款-->
+				<!--<ref local="updateAccountLoginJobTrigger" /> 		&lt;!&ndash; 登陆统计表(新) &ndash;&gt;
+				<ref local="updateAccountRegisterStatsJobTrigger" />		&lt;!&ndash; 注册统计表(新) &ndash;&gt;
+				<ref local="refundRedPacketJobTrigger" />		&lt;!&ndash; 红包撤销申请 &ndash;&gt;
+				<ref local="updateRedPacketShareJobTrigger" />	&lt;!&ndash;更新到期的分享红包&ndash;&gt;
+				<ref local="updateEventAndAwardSysnJobTrigger" />	&lt;!&ndash;更新act活动及其活动奖品同步到redis缓存&ndash;&gt;
+				<ref local="visitReportStatsTrigger" />	&lt;!&ndash;访问数据统计报表&ndash;&gt;
+				<ref local="updateAccountQuickPayOrderTrigger" />	&lt;!&ndash;处理预约订单&ndash;&gt;
+				<ref local="updatePayOrderCardToAccountStatsTrigger" />	&lt;!&ndash;处理payOrder钱包转账户&ndash;&gt;
+				<ref local="UpdatePayOrderWithdrawStatsTrigger" />	&lt;!&ndash;提现统计表(新)&ndash;&gt;
+				<ref local="UpdatePayOrderDepositStatsTrigger" />	&lt;!&ndash;充值统计表（新）&ndash;&gt;
+				<ref local="updateReqProjThirdInterfaceStatsTrigger" />	&lt;!&ndash;统计不同请求来源调用第三方接口数据源&ndash;&gt;
+				<ref local="updateWithdrawResJobTrigger" />	&lt;!&ndash;统计不同请求来源调用第三方接口数据源&ndash;&gt;
+				<ref local="PayOrderCloseJobTrigger" />	&lt;!&ndash;订单状态是订单生成的改为订单关闭&ndash;&gt;
+				<ref local="reportAccountSexAndAgeProportionJobTrigger" />	&lt;!&ndash;男女比例和年龄比例统计表&ndash;&gt;-->
+			</list>
+		</property>
+	</bean>
+</beans>

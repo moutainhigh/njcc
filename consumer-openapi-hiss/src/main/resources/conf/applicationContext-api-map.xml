@@ -1,0 +1,63 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<bean id="apiHandlerClassMaps" class="java.util.HashMap">
+		<constructor-arg>
+			<map>
+				<entry key="50027" value="com.ncvas.handler.common.CheckSmsCodeHandler"></entry>
+				<entry key="50028" value="com.ncvas.handler.common.AdvertisementHandler"></entry>
+				<entry key="50035" value="com.ncvas.handler.common.QueryPayInfoHandler"></entry>
+				<entry key="50061" value="com.ncvas.handler.common.ChannelHandler"></entry>
+				<entry key="10656" value="com.ncvas.handler.common.StoreQueryAroundHandler"></entry>
+
+				<entry key="10601" value="com.ncvas.handler.hiss.HissRegisterHandler"></entry>
+				<entry key="10602" value="com.ncvas.handler.hiss.HissLoginHandler"></entry>
+				<entry key="10605" value="com.ncvas.handler.hiss.HissModifyPasswordHandler"></entry>
+				<!--<entry key="10610" value="com.ncvas.handler.hiss.HissBindBankCardHandler"></entry>-->
+				<entry key="10610" value="com.ncvas.handler.hiss.HissBindBankCardHandler2"></entry>
+				<entry key="10612" value="com.ncvas.handler.hiss.HissQuickPayMentBankListHandler"></entry>
+				<entry key="10613" value="com.ncvas.handler.hiss.HissUnBinDingQuickPayMentBankCardHandler"></entry>
+				<entry key="10614" value="com.ncvas.handler.hiss.HissGetCheckCodeHandler"></entry>
+				<entry key="10615" value="com.ncvas.handler.hiss.HissMemberInfoHandler"></entry>
+				<entry key="10616" value="com.ncvas.handler.hiss.HissCheckCertificationHandler"></entry>
+				<entry key="10618" value="com.ncvas.handler.hiss.HissResetPwdHandler"></entry>
+				<entry key="10620" value="com.ncvas.handler.hiss.HissWithdrawHandler"></entry>
+				<!--<entry key="10620" value="com.ncvas.handler.hiss.HissWithdrawHandler2"></entry>-->
+				<!--<entry key="10620" value="com.ncvas.handler.hiss.HissWithdrawHandler3"></entry>-->
+				<entry key="10633" value="com.ncvas.handler.hiss.HissBindNjccCardHandler"></entry>
+				<entry key="10634" value="com.ncvas.handler.hiss.HissUnBindNjccCardHandler"></entry>
+				<entry key="10635" value="com.ncvas.handler.hiss.HissQueryAliasCodeHandler"></entry>
+				<entry key="10636" value="com.ncvas.handler.hiss.HissQueryNjccCardListHandler"></entry>
+				<entry key="10637" value="com.ncvas.handler.hiss.HissSetMainAliasCodeHandler"></entry>
+				<entry key="10639" value="com.ncvas.handler.hiss.HissQueryMainAliasCodeHandler"></entry>
+				<entry key="10640" value="com.ncvas.handler.hiss.HissVerdictPayPasswordHandler"></entry>
+				<entry key="10641" value="com.ncvas.handler.hiss.HissRegisterNjccVirtualHandler"></entry>
+				<!--<entry key="10643" value="com.ncvas.handler.hiss.HissUsertransferHandler"></entry>-->
+				<entry key="10643" value="com.ncvas.handler.hiss.HissUsertransferHandler2"></entry>
+				<entry key="10650" value="com.ncvas.handler.hiss.HissModifyMemberInfoHandler"></entry>
+				<entry key="10651" value="com.ncvas.handler.hiss.HissVerifyHandler"></entry>
+				<entry key="10652" value="com.ncvas.handler.hiss.HissQueryTransRdHandler"></entry>
+				<entry key="10653" value="com.ncvas.handler.hiss.HissQueryInfoHandler"></entry>
+				<entry key="10654" value="com.ncvas.handler.hiss.HissOpenHandler"></entry>
+				<entry key="10655" value="com.ncvas.handler.hiss.HissOpenAndVerifyNjccAccountPwdHandler"></entry>
+
+				<!--<entry key="11033" value="com.ncvas.handler.hiss.HissPayInfoCreateHandler"></entry>-->
+				<entry key="11033" value="com.ncvas.handler.hiss.HissPayInfoCreateHandler2"></entry>
+				<entry key="11610" value="com.ncvas.handler.hiss.HissBindBankCardPureHandler"></entry>
+				<entry key="11633" value="com.ncvas.handler.hiss.HissBindAndVerifyNjccCardHandler"></entry>
+				<!--<entry key="12000" value="com.ncvas.handler.hiss.HissDepositHandler"></entry>-->
+				<entry key="12000" value="com.ncvas.handler.hiss.HissDepositHandler2"></entry>
+				<entry key="12610" value="com.ncvas.handler.hiss.HissBindBankCardCheckHandler"></entry>
+
+			</map>
+		</constructor-arg>
+	</bean>
+
+</beans>
