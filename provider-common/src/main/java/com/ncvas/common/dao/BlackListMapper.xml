@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncvas.common.dao.BlackListMapper">
+
+	<resultMap type="com.ncvas.common.entity.BlackList" id="blackListResultMap">
+		<id property="id" column="ID" />
+		<result property="mobile" column="MOBILE" />
+		<result property="aliascode" column="ALIASCODE" />
+		<result property="loginid" column="LOGINID" />
+		<result property="created" column="CREATED" />
+	</resultMap>
+
+    <insert id="add" parameterType="com.ncvas.common.entity.BlackList">
+    	<selectKey keyProperty="id" resultType="String" order="BEFORE">
+			SELECT SEQ_NJCC_BLACKLIST.NEXTVAL FROM DUAL
+		</selectKey>
+	      	INSERT INTO NJCC_BLACKLIST
+	      		(ID,MOBILE,ALIASCODE,LOGINID,CREATED) VALUES
+	      		(
+	     		#{id, jdbcType=VARCHAR},
+				#{mobile, jdbcType=VARCHAR},
+				#{aliascode, jdbcType=VARCHAR},
+				#{loginid, jdbcType=VARCHAR},
+				SYSDATE
+	      		)
+	</insert>
+	
+	<update id="update" parameterType="com.ncvas.common.entity.BlackList">
+		UPDATE NJCC_BLACKLIST
+		<set>
+			<if test="mobile !=null and mobile !=''">
+				MOBILE		=		#{mobile, jdbcType=VARCHAR},
+			</if>
+			<if test="aliascode !=null and aliascode !=''">
+				ALIASCODE		=		#{aliascode, jdbcType=VARCHAR},
+			</if>
+			<if test="loginid !=null and loginid !=''">
+				LOGINID		=		#{loginid, jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+
+	<delete id="delete" parameterType="com.ncvas.common.entity.BlackList">
+		delete from NJCC_BLACKLIST
+			where 1=1
+			AND ID = #{id}
+	</delete>
+
+	<select id="query" resultMap="blackListResultMap" parameterType="com.ncvas.common.entity.BlackListDTO">
+		SELECT * FROM (
+			SELECT 
+				T.*,
+				ROWNUM AS RN
+			FROM (SELECT * FROM NJCC_BLACKLIST
+				<choose>
+						<when test="dto.orders != null and dto.orders !='' ">
+							ORDER BY ${dto.orders}
+						</when>
+						<otherwise>
+							ORDER BY CREATED DESC
+						</otherwise>
+				</choose>
+			)T
+			WHERE 
+				ROWNUM &lt;= #{endNum}
+				<if test="dto.id != null and dto.id !=''">AND ID = #{dto.id}</if>
+				<if test="dto.mobile != null and dto.mobile !=''"> AND MOBILE like '%'|| #{dto.mobile}||'%' </if>
+				<if test="dto.aliascode != null and dto.aliascode !=''"> AND ALIASCODE like '%'|| #{dto.aliascode}||'%' </if>
+				<if test="dto.loginid != null and  dto.loginid !=''"> AND LOGINID like '%'|| #{dto.loginid}||'%' </if>
+		) WHERE RN &gt; #{beginNum} 
+	</select>
+	
+	<select id="count" resultType="int" parameterType="com.ncvas.common.entity.BlackListDTO">
+		SELECT 
+			COUNT(*)
+		FROM NJCC_BLACKLIST
+		WHERE
+			1=1
+			<if test="dto.id != null and dto.id !=''">AND ID = #{dto.id}</if>
+			<if test="dto.mobile != null and dto.mobile !=''"> AND MOBILE like '%'|| #{dto.mobile}||'%' </if>
+			<if test="dto.aliascode != null and dto.aliascode !=''"> AND ALIASCODE like '%'|| #{dto.aliascode}||'%' </if>
+			<if test="dto.loginid != null and  dto.loginid !=''"> AND LOGINID like '%'|| #{dto.loginid}||'%' </if>
+	</select>
+</mapper>
