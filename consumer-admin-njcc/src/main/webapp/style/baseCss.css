@@ -1,0 +1,17 @@
+th,td{
+	font-size:10;
+	padding:0px;margin: 0px
+}
+
+.bk{
+	background: url('images/bg.png');
+}
+.table-search{width:100%;}
+.table-search th,.table-search td{border-bottom: 1px solid #ccc;}
+.table-search td input{margin-top: 10px;}
+
+.nopm{padding:0px;margin: 0px}
+
+.logo {
+	background: url('images/logo.png') no-repeat center;
+}
